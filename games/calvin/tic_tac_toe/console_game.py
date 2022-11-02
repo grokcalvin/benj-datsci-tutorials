@@ -44,6 +44,6 @@ def main():
                 print(f"Player {player.value} has Won!")
                 return
 
-1
+
 if __name__ == '__main__':
     main()
