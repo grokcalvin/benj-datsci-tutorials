@@ -2,7 +2,6 @@ from enum import Enum
 from dataclasses import dataclass
 
 
-
 @dataclass(frozen=True, eq=True)
 class POS:
     """
@@ -22,7 +21,7 @@ POSSIBLE_WINS = [
     (POS(x=3, y='a'), POS(x=3, y='b'), POS(x=3, y='c')),
     [POS(x=1, y='a'), POS(x=2, y='b'), POS(x=3, y='c')],
     [POS(x=1, y='a'), POS(x=2, y='b'), POS(x=3, y='c')]
- ]
+]
 
 
 class Player(Enum):
@@ -30,12 +29,20 @@ class Player(Enum):
     O = 'O'
     NA = '-'
 
+
 class GameState(Enum):
     START = 'The game is afoot!'
     WIN = 'The game has been won!'
     NO_WIN = 'No win yet, keep playing!'
+    INVALID_MOVE = "Cannot make that move"
     TIE = 'The game is tied!'
 
+
+class MoveState(Enum):
+    VALID = 'valid move'
+    TAKEN = 'That position is taken, try again'
+    INVALID_POSITION = 'Invalid position, try again'
+    INVALID_PLAYER = 'Invalid player, what are you doing?'
 
 
 class TicTacToe:
@@ -44,29 +51,43 @@ class TicTacToe:
 
     def __init__(self) -> None:
         self.board = {POS(x, y): Player.NA for y in self.ypos for x in self.xpos}
-        self.game_state = GameState.START
+        self.state = GameState.START
         self.current_player = Player.NA
 
+    def validate_move(self, player, pos) -> MoveState:
+        # make sure all move inputs are valid
+        if player == Player.NA:
+            state = GameState.INVALID_MOVE
+        elif pos not in self.board:
+            state = MoveState.INVALID_POSITION
+        elif not self.board[pos] == Player.NA:
+            state = MoveState.TAKEN
+        else:
+            state = MoveState.VALID
 
-    def update_game_state(self) -> None:
-        self.game_state = GameState.NO_WIN # assume no wins or ties before checking
-  
+        return state
+
+    def move(self, player: Player, pos: POS) -> MoveState:
+        # validate move before making it
+        move_state = self.validate_move(player, pos)
+        # do an "early return" if the move state is not valid
+        if move_state != MoveState.VALID:
+            return move_state
+
+        # Since the move is valid, let's play the game
+        self.state = GameState.NO_WIN  # assume no wins or ties before checking
+        self.current_player = player
+        self.board[pos] = player
+
         for win in POSSIBLE_WINS:
             owns = [self.board[pos] == self.current_player for pos in win]
             player_wins = min(owns)
             if player_wins:
-                self.game_state = GameState.WIN
-                break
+                self.state = GameState.WIN
+                return move_state
 
-        # are there any moves left? 
+        # are there any moves left?
         if Player.NA not in self.board.values():
-            self.game_state = GameState.TIE
+            self.state = GameState.TIE
 
-
-    def move(self, player: Player, pos: POS):
-        assert pos in self.board # make sure position is valid
-        assert player != Player.NA # make sure the player is valid 
-        assert self.board[pos] == Player.NA  # make sure that position is not already taken
-        self.current_player = player
-        self.board[pos] = player
-        self.update_game_state()
+        return move_state
