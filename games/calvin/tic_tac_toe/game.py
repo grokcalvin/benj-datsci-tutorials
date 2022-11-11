@@ -2,69 +2,71 @@ from enum import Enum
 from dataclasses import dataclass
 
 
+
+@dataclass(frozen=True, eq=True)
+class POS:
+    """
+    Defines each board position.  See TicTacToe class for valid x and y positions. 
+    """
+    x: int
+    y: str
+
+
+# See unit test for how these were produced
+POSSIBLE_WINS = [
+    (POS(x=1, y='a'), POS(x=2, y='a'), POS(x=3, y='a')),
+    (POS(x=1, y='b'), POS(x=2, y='b'), POS(x=3, y='b')),
+    (POS(x=1, y='c'), POS(x=2, y='c'), POS(x=3, y='c')),
+    (POS(x=1, y='a'), POS(x=1, y='b'), POS(x=1, y='c')),
+    (POS(x=2, y='a'), POS(x=2, y='b'), POS(x=2, y='c')),
+    (POS(x=3, y='a'), POS(x=3, y='b'), POS(x=3, y='c')),
+    [POS(x=1, y='a'), POS(x=2, y='b'), POS(x=3, y='c')],
+    [POS(x=1, y='a'), POS(x=2, y='b'), POS(x=3, y='c')]
+ ]
+
+
 class Player(Enum):
     X = 'X'
     O = 'O'
     NA = '-'
 
-XPOS = (1, 2, 3)
-YPOS = ('a', 'b', 'c')
-
-@dataclass(frozen=True, eq=True)
-class POS:
-    x: int
-    y: str
-
-
-START_BOARD = {POS(x, y): Player.NA for y in YPOS for x in XPOS}
-
-
-def possible_wins():
-    possible_wins = []
-    # won a row? 
-    rows =[tuple(POS(x=x, y=y) for x in XPOS) for y in YPOS]
-    possible_wins.extend(list(rows))
-    # won a column? 
-    columns =[tuple(POS(x=x, y=y) for y in YPOS) for x in XPOS]
-    possible_wins.extend(list(columns))
-    # won down diagonal? 
-    down_diag = [
-        POS(x=1, y='a'),
-        POS(x=2, y='b'),
-        POS(x=3, y='c'),
-    ]
-    possible_wins.append(down_diag)
-    # won up diagonal? 
-    up_diag = [
-        POS(x=1, y='c'),
-        POS(x=2, y='b'),
-        POS(x=3, y='a'),
-    ]
-    possible_wins.append(down_diag)
-    return possible_wins
-
-
-def tictactoe(board, player, pos):
-    
-    def move(board, player, pos: POS):
-        assert pos.x in XPOS
-        assert pos.y in YPOS
-        assert board[pos] == Player.NA
-        board[pos] = player
-        return board
-
-    def player_wins(board, player) -> bool:
-        for possible_win in possible_wins():
-            owns = [board[pos] == player for pos in possible_win]
-            wins = min(owns)
-            if wins:
-                return wins
-
-        return False
-
-    board = move(board, player, pos)
-    wins = player_wins(board, player)
-    return board, wins
+class GameState(Enum):
+    START = 'The game is afoot!'
+    WIN = 'The game has been won!'
+    NO_WIN = 'No win yet, keep playing!'
+    TIE = 'The game is tied!'
 
 
 
+class TicTacToe:
+    xpos = (1, 2, 3)
+    ypos = ('a', 'b', 'c')
+
+    def __init__(self) -> None:
+        self.board = {POS(x, y): Player.NA for y in self.ypos for x in self.xpos}
+        self.game_state = GameState.START
+        self.current_player = Player.NA
+
+
+    def update_game_state(self) -> None:
+        self.game_state = GameState.NO_WIN # assume no wins or ties before checking
+  
+        for win in POSSIBLE_WINS:
+            owns = [self.board[pos] == self.current_player for pos in win]
+            player_wins = min(owns)
+            if player_wins:
+                self.game_state = GameState.WIN
+                break
+
+        # are there any moves left? 
+        if Player.NA not in self.board.values():
+            self.game_state = GameState.TIE
+
+
+    def move(self, player: Player, pos: POS):
+        assert pos in self.board # make sure position is valid
+        assert player != Player.NA # make sure the player is valid 
+        assert self.board[pos] == Player.NA  # make sure that position is not already taken
+        self.current_player = player
+        self.board[pos] = player
+        self.update_game_state()

@@ -20,28 +20,17 @@ START_BOARD = {POS(x, y): Player.NA for y in YPOS for x in XPOS}
 
 
 def possible_wins():
-    possible_wins = []
-    # won a row? 
-    rows =[tuple(POS(x=x, y=y) for x in XPOS) for y in YPOS]
-    possible_wins.extend(list(rows))
-    # won a column? 
-    columns =[tuple(POS(x=x, y=y) for y in YPOS) for x in XPOS]
-    possible_wins.extend(list(columns))
-    # won down diagonal? 
-    down_diag = [
-        POS(x=1, y='a'),
-        POS(x=2, y='b'),
-        POS(x=3, y='c'),
+    ## Truth Table: See unit test for how this was generated
+    return [
+        (POS(x=1, y='a'), POS(x=2, y='a'), POS(x=3, y='a')),
+        (POS(x=1, y='b'), POS(x=2, y='b'), POS(x=3, y='b')),
+        (POS(x=1, y='c'), POS(x=2, y='c'), POS(x=3, y='c')),
+        (POS(x=1, y='a'), POS(x=1, y='b'), POS(x=1, y='c')),
+        (POS(x=2, y='a'), POS(x=2, y='b'), POS(x=2, y='c')),
+        (POS(x=3, y='a'), POS(x=3, y='b'), POS(x=3, y='c')),
+        [POS(x=1, y='a'), POS(x=2, y='b'), POS(x=3, y='c')],
+        [POS(x=1, y='a'), POS(x=2, y='b'), POS(x=3, y='c')]
     ]
-    possible_wins.append(down_diag)
-    # won up diagonal? 
-    up_diag = [
-        POS(x=1, y='c'),
-        POS(x=2, y='b'),
-        POS(x=3, y='a'),
-    ]
-    possible_wins.append(down_diag)
-    return possible_wins
 
 
 def tictactoe(board, player, pos):
