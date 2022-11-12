@@ -45,6 +45,7 @@ class MoveState(Enum):
     INVALID_PLAYER = 'Invalid player, what are you doing?'
 
 
+
 class TicTacToe:
     xpos = (1, 2, 3)
     ypos = ('a', 'b', 'c')
@@ -54,7 +55,7 @@ class TicTacToe:
         self.state = GameState.START
         self.current_player = Player.NA
 
-    def validate_move(self, player, pos) -> MoveState:
+    def validate_move(self, player, pos: POS) -> MoveState:
         # make sure all move inputs are valid
         if player == Player.NA:
             state = GameState.INVALID_MOVE

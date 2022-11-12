@@ -4,9 +4,9 @@ from game import TicTacToe, POS, Player, GameState, MoveState
 
 def print_board(game):
     print(' 123')
-    for y in TicTacToe.ypos:
+    for y in game.ypos:
         line = y
-        for x in TicTacToe.xpos:
+        for x in game.xpos:
             pos = POS(x=x, y=y)
             line = line + game.board[pos].value
         print(line)
