@@ -4,6 +4,8 @@ import time
 import keyboard
 import copy
 
+#this is a test
+
 map_item = ["🟩","🟥","🔥","💢","💕"]
 player_skin = "🙂"
 player_X = 0
