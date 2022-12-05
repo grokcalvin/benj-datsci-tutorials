@@ -11,6 +11,8 @@ player_Y = 0
 Map_X, Map_Y = (0,0)
 #item pickup - 
 
+print('practicing merging')
+
 class player_object():
     hp = 20
     upper_body_strength = 1
