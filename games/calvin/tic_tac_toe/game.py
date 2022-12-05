@@ -52,6 +52,7 @@ class TicTacToe:
 
     def __init__(self) -> None:
         self.board = {POS(x, y): Player.NA for y in self.ypos for x in self.xpos}
+        #a tag system from the class GameState
         self.state = GameState.START
         self.current_player = Player.NA
 
@@ -59,35 +60,65 @@ class TicTacToe:
         # make sure all move inputs are valid
         if player == Player.NA:
             state = GameState.INVALID_MOVE
+
+        #this should never happen because output has already been filtered
         elif pos not in self.board:
             state = MoveState.INVALID_POSITION
+
+        #self.board?
         elif not self.board[pos] == Player.NA:
             state = MoveState.TAKEN
-        else:
+        #same as
+        #elif not dictionary[key] == "-"
+        #   output = MoveState.TAKEN
+
+
+        else: #this returns a string from the MoveState
             state = MoveState.VALID
 
         return state
 
+    #this will test if a player can replace a "-" value and for test for wins
     def move(self, player: Player, pos: POS) -> MoveState:
         # validate move before making it
+        #self refers to the object.method
+        #move_state = tag after tests conditions
         move_state = self.validate_move(player, pos)
+        #imagine a tag system
+
+        #move_state = function_within_class(typical_value,typical_value)
+
+        
+        #uses same values acrross lots of functions
+
         # do an "early return" if the move state is not valid
+        #this end the function before it can run the rest, IF ITS a invalid move
+        #executes on no tag
+        #validate move is blocks of code that have specific outputs
         if move_state != MoveState.VALID:
             return move_state
 
         # Since the move is valid, let's play the game
         self.state = GameState.NO_WIN  # assume no wins or ties before checking
-        self.current_player = player
+        self.current_player = player #this comes from a for loop where X and O are in a list being iterated through via for loop
+        #self.board is defined on init on the TicTackToe board
+        #this index key's value now = the current player selected
         self.board[pos] = player
 
+        #this scans though tuples containing 3 elements each, each element is a index of the board dictionary. You can break down "win" to access its elements as seen in the list comprehension
         for win in POSSIBLE_WINS:
+            #breaks down and tests elements using min and True False values from "operators?"
             owns = [self.board[pos] == self.current_player for pos in win]
             player_wins = min(owns)
+            #if 1 then go, if statements look for true or false values that you can just hand it directly
             if player_wins:
                 self.state = GameState.WIN
                 return move_state
 
+            #changes more than the return value
+
         # are there any moves left?
+        #values makes an iterable of just values of all the keys
         if Player.NA not in self.board.values():
             self.state = GameState.TIE
 
