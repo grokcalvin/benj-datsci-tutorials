@@ -5,11 +5,11 @@ from dataclasses import dataclass
 #%20 short, %60 average %20percent tall then recurively select where you are one the board, output changes per recursion and then do an operation on the remaining value that starts 0-1 float each level changes output by 1.25
 
 #make classes in a different modual
-class human():
+class Human():
     def __init__(self,level:int,is_player=False):
         self.is_player = is_player
         
-        self.type = "human"
+        self.type = "Human"
 
         self.leg_length = random_scale_3()
         self.torso_height = random_scale_3()
@@ -17,6 +17,8 @@ class human():
         self.size = random_scale_3()
         #need to deep copy when you input new values
         self.move_dict = {"front_kick":{"Xp":0,"Level":1}}
+
+        #moves have directories that decid how the math works
 
         self.level = level
         self.Level_Up_Points = self.level
@@ -28,6 +30,10 @@ class human():
         self.wisdom = 2
         self.intelligents = 2
         self.charsima = 2
+
+    #when one a item, you have options based on the items stats, then run function on item.
+    #have multipliers that you use when calucating functions outputs.
+    #tags that can be added and are used for default calculations
 
         while self.Level_Up_Points > 0:
             random_attribute = random.randint(1,6)
@@ -50,12 +56,27 @@ class human():
 
     def Random_Attack_Damage(self):
         return 1
+    
+    #def Dexterity_Check(incoming_attack,entity_being_attacked)
+    def Dexterity_Check(self,incoming_attack_Damage):
+        if (0.95)**self.dexterity > random.random():
+            self.health = self.health - int(incoming_attack_Damage)
+            print(self.type+" takes {}".format(incoming_attack_Damage))
+        else:
+            print(self.type+" dodged")
+
+            #rewrite this in function mode where you do all these in functionss
+
 
 class goblin():
     def __init__(self,level:int,is_player=False):
         self.is_player = is_player
         
         self.type = "goblin"
+
+
+#       have a function accept the target and self and use the attackers stats to change the resievers role of dexterity
+#       function accepts the target entity as arguement and uses targets attributes to change main calculations
 
         self.leg_length = random_scale_3(base_multiplier=0.7)
         self.torso_height = random_scale_3(base_multiplier=1)
@@ -97,6 +118,13 @@ class goblin():
 
     def Random_Attack_Damage(self):
         return 1
+
+    def Dexterity_Check(self,incoming_attack_Damage):
+        if (0.95)**self.dexterity > random.random():
+            self.health = self.health - int(incoming_attack_Damage)
+            print(self.type+" takes {}".format(incoming_attack_Damage))
+        else:
+            print(self.type+" dodged")
 
 class elf():
     def __init__(self,level:int,is_player=False):
@@ -145,6 +173,12 @@ class elf():
     def Random_Attack_Damage(self):
         return 1
 
+    def Dexterity_Check(self,incoming_attack_Damage):
+        if (0.95)**self.dexterity > random.random():
+            self.health = self.health - incoming_attack_Damage
+            print(self.type+" takes {}".format(incoming_attack_Damage))
+        else:
+            print(self.type+" dodged")
 #base damage * role
 #class goblin()
 
@@ -279,54 +313,6 @@ def random_scale_3(base_multiplier=1):
         return base_multiplier*((random_scale_tall(base,testfor_num,output,baseline)//0.001)/1000)
 
 
-
-for i in range(5):
-    goblin_bob = goblin(level=5)
-#    print(random_scale_3(base_multiplier=1))
-    print("Golbin")
-
-    print(goblin_bob.size)
-    print(goblin_bob.strength)
-    print(goblin_bob.constitution)
-    print(goblin_bob.dexterity)
-    print(goblin_bob.wisdom)
-    print(goblin_bob.intelligents)
-    print(goblin_bob.charsima)
-    print("\n")
-    print(goblin_bob.max_health)
-    print("\n")
-
-for i in range(50):
-    goblin_bob = human(level=random.randint(1,10))
-#    print(random_scale_3(base_multiplier=1))
-    print("Human")
-
-    print(goblin_bob.size)
-    print(goblin_bob.strength)
-    print(goblin_bob.constitution)
-    print(goblin_bob.dexterity)
-    print(goblin_bob.wisdom)
-    print(goblin_bob.intelligents)
-    print(goblin_bob.charsima)
-    print("\n")
-    print(goblin_bob.max_health)
-    print("\n")
-
-for i in range(5):
-    goblin_bob = elf(level=5)
-#    print(random_scale_3(base_multiplier=1))
-    print("elf")
-
-    print(goblin_bob.size)
-    print(goblin_bob.strength)
-    print(goblin_bob.constitution)
-    print(goblin_bob.dexterity)
-    print(goblin_bob.wisdom)
-    print(goblin_bob.intelligents)
-    print(goblin_bob.charsima)
-    print("\n")
-    print(goblin_bob.max_health)
-    print("\n")
         #function tall, this loops in itself until it doesnt pass the if statment of  base >= testfor_num*9 and also change testfor_num everytime
         #function short
 
@@ -341,7 +327,7 @@ class party():
 
 
 #define player
-player_1 = human(level=1, is_player = True)
+player_1 = Human(level=1, is_player = True)
 party_1 = party(entities=[player_1])
 print(party_1.entities)
 
@@ -364,13 +350,15 @@ def battle(all_entities,party_1,party_2):
             party_1_attacking = i in party_1.entities
             if party_1_attacking:
                 target = party_2.entities[random.randrange(len(party_2.entities))]
-                target.health = target.health - i.Random_Attack_Damage()
+                target.Dexterity_Check(i.Random_Attack_Damage)
+                #target.health = target.health - i.Random_Attack_Damage()
                 print(str(target.type)+" "+str(target.health))
                 if target.health <= 0:
                     all_entities,party_2 = player_died(target,all_entities,party_2)
             else:
                 target = party_1.entities[random.randrange(len(party_1.entities))]
-                target.health = target.health - i.Random_Attack_Damage()
+                target.Dexterity_Check(i.Random_Attack_Damage)
+                #target.health = target.health - i.Random_Attack_Damage()
                 print(str(target.type)+" "+str(target.health))
                 if target.health <= 0:
                     all_entities,party_1 = player_died(target,all_entities,party_1)
