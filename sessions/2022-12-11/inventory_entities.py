@@ -1,14 +1,23 @@
-"""
-Consumable
-
-Weapons
-
-Armor
-
-"""
-
 from dataclasses import dataclass
 from typing import List
+
+
+
+class HealthIncrease:
+    def __init__(self, name: str, health_amount: int, quantity: int) -> None:
+        self.name = name
+        self.health_amount = health_amount
+        self.quantity = quantity
+
+    def action(self, entity):
+        new_health = entity.health  + self.health_amount
+        # don't add more health than the maximum allowed
+        entity.health = min(new_health, entity.max_health)
+        self.quantity -= 1
+        return entity
+
+
+
 
 @dataclass
 class Item:
@@ -29,23 +38,3 @@ class Inventory:
         if item.name not in names:
             self.storage.append(item)
 
-
-class HealthIncrease:
-    name: str
-    health_amount: int
-
-    def action(self, entity):
-        new_health = entity.health  + self.add_health
-        # don't add more health than the maximum allowed
-        entity.health = min(new_health, self.max_health)
-
-
-
-# class Consumable: 
-#     pass
-
-# class Weapon:
-#     pass
-
-# class Armor:
-#     pass
