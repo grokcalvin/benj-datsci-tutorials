@@ -58,8 +58,8 @@ class Human():
         return 1
     
     #def Dexterity_Check(incoming_attack,entity_being_attacked)
-    def Dexterity_Check(self,incoming_attack_Damage):
-        if (0.95)**self.dexterity > random.random():
+    def Dexterity_Check(self,incoming_attack_Damage,attacker):
+        if (0.10)*(self.dexterity-attacker.dexterity) < random.random():
             self.health = self.health - int(incoming_attack_Damage)
             print(self.type+" takes {}".format(incoming_attack_Damage))
         else:
@@ -119,8 +119,8 @@ class goblin():
     def Random_Attack_Damage(self):
         return 1
 
-    def Dexterity_Check(self,incoming_attack_Damage):
-        if (0.95)**self.dexterity > random.random():
+    def Dexterity_Check(self,incoming_attack_Damage,attacker):
+        if (0.10)*(self.dexterity-attacker.dexterity) < random.random():
             self.health = self.health - int(incoming_attack_Damage)
             print(self.type+" takes {}".format(incoming_attack_Damage))
         else:
@@ -173,9 +173,9 @@ class elf():
     def Random_Attack_Damage(self):
         return 1
 
-    def Dexterity_Check(self,incoming_attack_Damage):
-        if (0.95)**self.dexterity > random.random():
-            self.health = self.health - incoming_attack_Damage
+    def Dexterity_Check(self,incoming_attack_Damage,attacker):
+        if (0.10)*(self.dexterity-attacker.dexterity) < random.random():
+            self.health = self.health - int(incoming_attack_Damage)
             print(self.type+" takes {}".format(incoming_attack_Damage))
         else:
             print(self.type+" dodged")
@@ -350,14 +350,14 @@ def battle(all_entities,party_1,party_2):
             party_1_attacking = i in party_1.entities
             if party_1_attacking:
                 target = party_2.entities[random.randrange(len(party_2.entities))]
-                target.Dexterity_Check(i.Random_Attack_Damage)
+                target.Dexterity_Check(i.Random_Attack_Damage,i)
                 #target.health = target.health - i.Random_Attack_Damage()
                 print(str(target.type)+" "+str(target.health))
                 if target.health <= 0:
                     all_entities,party_2 = player_died(target,all_entities,party_2)
             else:
                 target = party_1.entities[random.randrange(len(party_1.entities))]
-                target.Dexterity_Check(i.Random_Attack_Damage)
+                target.Dexterity_Check(i.Random_Attack_Damage,i)
                 #target.health = target.health - i.Random_Attack_Damage()
                 print(str(target.type)+" "+str(target.health))
                 if target.health <= 0:
