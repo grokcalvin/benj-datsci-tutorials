@@ -43,3 +43,6 @@ def spawn_human(Level):
         charsima = 2,
     )
     return new_entity
+human_1 = spawn_human(10)
+
+print(human_1.size)

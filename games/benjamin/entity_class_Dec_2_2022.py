@@ -186,6 +186,8 @@ class elf():
 #mucle xp takes xp gained/((muscle_group_xp/1000)^2)
 #strength adds 1000 xp to every muscle group when in combact
 
+#a title object that has a name and a action. the actions will create a new list of other title objects. the title object lists will be read by name in a for loop. that will be updated and recreated by other title objects.
+
 def random_scale():
     testfor_num = 1
     base = random.random()
@@ -350,14 +352,14 @@ def battle(all_entities,party_1,party_2):
             party_1_attacking = i in party_1.entities
             if party_1_attacking:
                 target = party_2.entities[random.randrange(len(party_2.entities))]
-                target.Dexterity_Check(i.Random_Attack_Damage,i)
+                target.Dexterity_Check(i.Random_Attack_Damage(),i)
                 #target.health = target.health - i.Random_Attack_Damage()
                 print(str(target.type)+" "+str(target.health))
                 if target.health <= 0:
                     all_entities,party_2 = player_died(target,all_entities,party_2)
             else:
                 target = party_1.entities[random.randrange(len(party_1.entities))]
-                target.Dexterity_Check(i.Random_Attack_Damage,i)
+                target.Dexterity_Check(i.Random_Attack_Damage(),i)
                 #target.health = target.health - i.Random_Attack_Damage()
                 print(str(target.type)+" "+str(target.health))
                 if target.health <= 0:
