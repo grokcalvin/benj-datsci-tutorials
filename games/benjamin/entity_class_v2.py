@@ -1,22 +1,26 @@
 import random
 from entity_class_Dec_2_2022 import random_scale_3
+from move_class import move_class
 
 #trend stat, is_male is random number, and then you test if new random number is greater than that trend stat.
 #trend function, with a trend stat input and then a output
 
 #need a initialization of players stats and name
 
+#random loot tables that are appended to the inventory of entities
+
+#need a way to level up and put points on things
+
+#when not in battle, option to eat food
+
 with open("male_names.txt","r") as a:
     male_names_list = a.read().splitlines()
-print(male_names_list)
 
 with open("female_names.txt","r") as a:
     female_names_list = a.read().splitlines()
-print(female_names_list)
 
 with open("last_names.txt","r") as a:
     last_names_list = a.read().splitlines()
-print(last_names_list)
 
 class BaseHumanoidEntity():
     def __init__(self,race,leg_length,torso_height,arm_length,size,level,level_up_points,strength,constitution,dexterity,wisdom,intelligents,charisma,is_player=False,is_male=random.randint(0,1)) -> None:
@@ -62,7 +66,39 @@ class BaseHumanoidEntity():
         self.max_health = (((self.leg_length**2+self.arm_length**2+self.torso_height**2)/3)*self.size**2)*(70+(10*self.constitution))//0.001/1000
         self.health = self.max_health
 
-        #do i want a separate function modifying the gender and stats of an entity this way different modifiers per race
+
+
+        self.neck_muscle = random.randint(1,2000)
+        self.chest_msucle = random.randint(1,2000)
+        self.arm_muscle = random.randint(1,2000)
+        self.core_muscle = random.randint(1,2000)
+        self.leg_muscle = random.randint(1,2000)
+
+        if not self.is_player:
+            self.move_list = ["front kick","foward gap","upper cut"]
+        else:
+            self.move_list = ["front kick","foward gap","upper cut"]
+
+
+
+
+        def load_move(move:str):
+            #grabs a specifcially names move based on "move", then adds to dictionary and gives a object as value from the add_moves function.
+            #body usage types
+            #function that uses the info of the object to filter through which body type to use
+            #.action is used on the dictionary value object to give back a damage value
+            #will need a armor devider of damage
+            #make size a slight aborber armor - attack
+            #average attack is 10, average aborbsion is size**2
+
+            #object will have xp and level attributes
+            return move_class(move_type=move)
+
+        self.move_dict = {}
+
+        for move in self.move_list:
+            self.move_dict[move] = load_move(move=move)
+            #print(self.move_dict)
 
     def Set_Health(self):
         self.max_health = (((self.leg_length**2+self.arm_length**2+self.torso_height**2)/3)*self.size**2)*(70+(10*self.constitution))//0.001/1000
@@ -86,13 +122,19 @@ class BaseHumanoidEntity():
                 self.charsima +=1
             self.level_up_points -= 1
 
+#
+
     def random_attack(self):
         #random number based on the len of move types, then use that indexed item from list to find the matching dictionary value which is a object that has damage multiplier, and need to accept parent entity values to perform a function for a output.
         #also calculate the damage then use that a a weight to calculate what move they will do adding up all the values that came before it and one after it to see if it falls in that range.
         #random item in a list, thats used as a dictionary key, and do a function on that object with the entity being passed as a argument.
         #class with need, body types that are used in calculating, muscle groups, and then xp level of move, this will give the damage output that can be blocked.
         #players get to veiw their move list and then if input in list then use input as key for dictionary.
-        return (1,random.randint(1,20))
+        #when run the function, also add xp to move, and xp to muslce groups
+        ###attack = self.move_dict[self.move_list[random.randint(0,len(self.move_list))-1]].action(self)#maybe pass limb size and muscle groups to this#test if self works
+        #do we want a separate moves list vs a dictionary, call and print the moves from the dictionary keys
+        attack = self.move_dict[self.move_list[random.randint(0,(len(self.move_list)-1))]].action(parent=self)
+        return (attack,random.randint(1,20))
 
 #does having a main class for everything make more sense compared to functions because of all the inputs you need to change in the function.
 #instead have all classes inherit from a main one the functions, but give them different innit functions.
@@ -190,27 +232,10 @@ def summon_elf(Level,is_player=False):
     entity.Auto_Add_Level_Up_Points()
     return entity
 
-
-human_bob = summon_human(10)
-
-print(human_bob.max_health)
-print(human_bob.level)
-print(human_bob.size)
-print(human_bob.wisdom)
-print(human_bob.race)
-
-
-
 class party():
     def __init__(self,entities:list):
         self.entities = entities
 
-
-
-
-player_1 = summon_human(Level=1, is_player = False)
-party_1 = party(entities=[player_1])
-print(party_1.entities)
 
 def player_died(target,all_entities,party):
     if target.health <= 0:
@@ -277,6 +302,10 @@ def random_battle_goblin(party_1):
 
 
 def main():
+    player_1 = summon_human(Level=1, is_player = False)
+    party_1 = party(entities=[player_1])
+    print(party_1.entities)
+
 
     battle_output = random_battle_goblin(party_1)
     if battle_output == "continue":
