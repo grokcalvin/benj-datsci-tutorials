@@ -1,7 +1,85 @@
 import random
-from entity_class_Dec_2_2022 import random_scale_3
 from move_class import move_class
-from inventory_and_items import Inventory, food
+from inventory_and_items import Inventory
+
+
+
+def random_scale_3(base_multiplier=1):
+    testfor_num = 1
+    base = (random.random()//0.001)/1000
+    output = 1
+    baseline = 0
+    testfor_num = testfor_num/10
+    def random_scale_short(base,testfor_num,output):
+        while True:
+            if base <= testfor_num:
+                output = output*0.8
+            elif base <= testfor_num*2:
+                output = output*0.84
+                return output
+            elif base <= testfor_num*4:
+                output = output*0.88
+                return output
+            elif base <= testfor_num*6:
+                output = output*0.92
+                return output
+            elif base <= testfor_num*8:
+                output = output*0.96
+                return output
+            else:
+                return output
+            testfor_num = testfor_num/10
+
+    def random_scale_average(base,testfor_num,output,baseline):
+        change_scale = 1
+        for i in range(2):
+            if base >= baseline+testfor_num*8:
+                #output = output*(1+change_scale*0.1)
+                output = output*1.1
+                baseline = baseline+testfor_num*8
+            elif base >= baseline+testfor_num*6:
+                output = output*1.05
+                baseline = baseline+testfor_num*6
+            elif base >= baseline+testfor_num*4:
+                output = output
+                baseline = baseline+testfor_num*4
+            elif base >= baseline+testfor_num*2:
+                output = output*0.96
+                baseline = baseline+testfor_num*2
+            elif base >= 0:
+                output = output*0.92
+            testfor_num= testfor_num/10
+            change_scale = change_scale/10
+        return (output//0.001)/1000
+
+    def random_scale_tall(base,testfor_num,output,baseline):
+        while True:
+            if base >= baseline+testfor_num*9:
+                baseline = baseline+testfor_num*9
+                output = output*1.25
+            elif base >= baseline+testfor_num*8:
+                output = output*1.20
+                return output
+            elif base >= baseline+testfor_num*6:
+                output = output*1.15
+                return output
+            elif base >= baseline+testfor_num*4:
+                output = output*1.10
+                return output
+            elif base >= baseline+testfor_num*2:
+                output = output*1.05
+                return output
+            else:
+                return output
+            testfor_num = testfor_num/10
+
+    if base <= testfor_num:
+        return base_multiplier*((random_scale_short(base,testfor_num,output)//0.001)/1000)
+                #0+0.1  next is 0.9 + 0.1        #0+0.9  next needs to be 0.9+ 0.09
+    if base > baseline+testfor_num and base < baseline+testfor_num*9:
+        return base_multiplier*(random_scale_average(base,testfor_num,output,baseline))
+    if base >= baseline+testfor_num*9:
+        return base_multiplier*((random_scale_tall(base,testfor_num,output,baseline)//0.001)/1000)
 
 
 #trend stat, is_male is random number, and then you test if new random number is greater than that trend stat.

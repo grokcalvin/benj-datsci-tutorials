@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 import copy
-from entity_class_v2 import summon_human
+
 
 class Consumable:
     def __init__(self,name,health_increase,quantity,inventory_parent=None,entity_parent=None,lore=None) -> None:
@@ -179,7 +179,7 @@ def main():
     Inventory_3.remove(Inventory_4.items[0])
     Inventory_3.print_inventory()
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
 
 #loot tables
