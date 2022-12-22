@@ -22,9 +22,21 @@ with open("female_names.txt","r") as a:
 with open("last_names.txt","r") as a:
     last_names_list = a.read().splitlines()
 
-class BaseHumanoidEntity():
+class BaseHumanoidEntity:
     def __init__(self,race,leg_length,torso_height,arm_length,size,level,level_up_points,strength,constitution,dexterity,wisdom,intelligents,charisma,is_player=False,is_male=random.randint(0,1)) -> None:
         self.is_player :bool = is_player
+
+        #something that tracks stats that are the same for every entity
+        #entity sizes
+        #entity muslces
+
+        #entity attrubites
+        #this helps debugging and good practice
+        #everything has clear onwership
+        #debugging shows onwership
+        #when you start to run into problem with complexity
+
+
         if is_male == 0:
             self.is_male = True
         else:
@@ -68,16 +80,16 @@ class BaseHumanoidEntity():
 
 
 
-        self.neck_muscle = random.randint(1,2000)
-        self.chest_msucle = random.randint(1,2000)
-        self.arm_muscle = random.randint(1,2000)
-        self.core_muscle = random.randint(1,2000)
-        self.leg_muscle = random.randint(1,2000)
+        self.neck_muscle_group = random.randint(1,2000)
+        self.chest_muscle_group = random.randint(1,2000)
+        self.arm_muscle_group = random.randint(1,2000)
+        self.core_muscle_group = random.randint(1,2000)
+        self.leg_muscle_group = random.randint(1,2000)
 
         if not self.is_player:
-            self.move_list = ["front kick","foward gap","upper cut"]
+            self.move_list = ["front kick","forward gab","upper cut"]
         else:
-            self.move_list = ["front kick","foward gap","upper cut"]
+            self.move_list = ["front kick","forward gab","upper cut"]
 
 
 
@@ -133,38 +145,37 @@ class BaseHumanoidEntity():
         #when run the function, also add xp to move, and xp to muslce groups
         ###attack = self.move_dict[self.move_list[random.randint(0,len(self.move_list))-1]].action(self)#maybe pass limb size and muscle groups to this#test if self works
         #do we want a separate moves list vs a dictionary, call and print the moves from the dictionary keys
-        attack = self.move_dict[self.move_list[random.randint(0,(len(self.move_list)-1))]].action(parent=self)
-        return (attack,random.randint(1,20))
+
+        #make the role come separate from random attack
+        #also have if role 20, dodges dont work.
+        attack_type = self.move_list[random.randrange(0,(len(self.move_list)))]
+        attack = self.move_dict[attack_type].action(parent=self)
+        return (attack,attack_type)
 
 #does having a main class for everything make more sense compared to functions because of all the inputs you need to change in the function.
 #instead have all classes inherit from a main one the functions, but give them different innit functions.
 
     def choose_attack(self):
-        pass
+        #print("\nplayer avialable moves:")
+        #for m in self.move_list:
+        #    print(f" - {m}")
+        attack_type = input("Which attack move will you use?")
+        attack = self.move_dict[attack_type].action(parent=self)
+        return (attack,attack_type)
 
 
-    def Dexterity_Check(self,attacker):
+        #pass in the target and attacker dexterity values
+    def Dexterity_Check(self,attacker_dexterity):
         #attacker.random_attack role, this gets rid of the need for a incoming attack variable
         #but will need a is player arguement for if the player wants to do a specific attack
-        if attacker.is_player:
-            #attack,role = attacker.choose_attack()
-            attack,role = attacker.random_attack()
-              
+        if (0.10)*(self.dexterity-attacker_dexterity) < random.random():
+            #dexterity shouldnt be running combact it should check dexerity
+            #if you want it to run combact then rename it
+            #refactor
+            #where does role come from?
+            return False
         else:
-            attack,role = attacker.random_attack()
-        
-        if (0.10)*(self.dexterity-attacker.dexterity) < random.random():
-            if role == 20:
-                self.health = self.health - attack*2
-                print(f"Critical Hit x2 damage")
-                print(f"{attacker.race} - {attacker.name} {attacker.last_name} does {attack*2} damage to {self.race} - {self.name} {self.last_name}\n{self.race} - {self.name} {self.last_name} is at {self.health}HP.")
-            elif role == 1:
-                print(f"{attacker.race} - {attacker.name} {attacker.last_name} critcal failure, clean miss, {self.race} - {self.name} {self.last_name} takes 0 damage.")
-            else:
-                self.health = self.health - attack
-                print(f"{attacker.race} - {attacker.name} {attacker.last_name} does {attack} damage to {self.race} - {self.name} {self.last_name}\n{self.race} - {self.name} {self.last_name} is at {self.health}HP.")
-        else:
-            print(self.race+" dodged")
+            return True
 
 def summon_human(Level,is_player=False):
     entity = BaseHumanoidEntity(is_player=is_player,
@@ -191,10 +202,10 @@ def summon_human(Level,is_player=False):
 def summon_goblin(Level,is_player=False):
     entity = BaseHumanoidEntity(is_player=is_player,
                                 race= "Goblin",
-                                leg_length= random_scale_3(0.9),
-                                torso_height = random_scale_3(1.1),
+                                leg_length= random_scale_3(0.8),
+                                torso_height = random_scale_3(1),
                                 arm_length = random_scale_3(1),
-                                size = random_scale_3(0.5),
+                                size = random_scale_3(0.7),
 
                                 level = Level,
                                 level_up_points = Level - 1,
@@ -232,6 +243,11 @@ def summon_elf(Level,is_player=False):
     entity.Auto_Add_Level_Up_Points()
     return entity
 
+#damage is the weapon damage + profiency
+
+def d(number):
+    return random.randint(1,number)
+
 class party():
     def __init__(self,entities:list):
         self.entities = entities
@@ -253,27 +269,109 @@ def battle(all_entities,party_1,party_2):
     while len(party_1.entities) > 0 and len(party_2.entities) > 0:
         #does this update mid iteration>
 
-        for i in all_entities:
-            party_1_attacking = i in party_1.entities
+        for attacker in all_entities:
+            party_1_attacking = attacker in party_1.entities
             if party_1_attacking:
+                #if attacker is_player
+                #if is player, see the opposite party and type which one to attacks
                 target = party_2.entities[random.randrange(len(party_2.entities))]
-                target.Dexterity_Check(i)
+                if attacker.is_player:
+                    print("enter the attack you would like to do (e.g:front kick):")
+                    for n, move in enumerate(attacker.move_list):
+                        print(f"({n}) - {move}")
+
+                    base_attack,attack_type = attacker.choose_attack()
+                else:
+                    base_attack,attack_type = attacker.random_attack()
+
+                #attacker tries ____(front kick) on target
+
+                print(f"{attacker.race}:{attacker.name} {attacker.last_name} tries {attack_type}")
+
+                dodge = target.Dexterity_Check(attacker_dexterity=attacker.dexterity)
+                attack_role = d(20)
+
+                print(f"{attacker.race}:{attacker.name} {attacker.last_name} 10 +{attacker.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
+
+                if dodge and attack_role != 20:
+                    print(f"{target.race}:{target.name} {target.last_name} dodged attack from {attacker.race}:{attacker.name} {attacker.last_name}")
+                else:
+                    if attack_role == 1:
+                        print(f"Critical Failure! {attacker.race}:{attacker.name} {attacker.last_name} missed!")
+                    elif attack_role == 20:
+                        attack = base_attack*(30+attacker.strength)
+                        target.health = target.health - attack
+                        print(f"Critcal Attack {attacker.race}:{attacker.name} {attacker.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack}")
+                        print(f"target is at {target.health}HP")
+
+                    elif attack_role > 1 and attack_role < 20:
+                        attack = (base_attack*(10+attacker.strength)+(base_attack*attack_role/2))
+
+                        target.health = target.health - attack
+                        print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacker.race}:{attacker.name} {attacker.last_name} for {attack}")
+                        print(f"target is at {target.health}HP")
+
+                        #test the movement with front kick input  
+                        #later use the type of attack in the attack prints
+                #pass in i.dexterity
+                #dodge = True/False
                 print('\n')
                 #target.health = target.health - i.Random_Attack_Damage()
                 if target.health <= 0:
-                   all_entities,party_2 = player_died(target,all_entities,party_2)
-            else:
+                    print(f"{target.race}:{target.name} {target.last_name} has died.")
+                    all_entities,party_2 = player_died(target,all_entities,party_2)
+
+            if not party_1_attacking:
+                #if attacker is_player
                 target = party_1.entities[random.randrange(len(party_1.entities))]
-                target.Dexterity_Check(i)
+                if attacker.is_player:
+                    print("enter the attack you would like to do (e.g:front kick):")
+                    for n, move in enumerate(attacker.move_list):
+                        print(f"({n}) - {move}")
+
+                    base_attack,attack_type = attacker.choose_attack()
+                else:
+                    base_attack,attack_type = attacker.random_attack()
+
+                #attacker tries ____(front kick) on target
+
+                print(f"{attacker.race}:{attacker.name} {attacker.last_name} tries {attack_type}")
+
+                dodge = target.Dexterity_Check(attacker_dexterity=attacker.dexterity)
+                attack_role = d(20)
+
+                print(f"{attacker.race}:{attacker.name} {attacker.last_name} 10 +{attacker.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
+
+                if dodge and attack_role != 20:
+                    print(f"{target.race}:{target.name} {target.last_name} dodged attack from {attacker.race}:{attacker.name} {attacker.last_name}")
+                else:
+                    if attack_role == 1:
+                        print(f"Critical Failure! {attacker.race}:{attacker.name} {attacker.last_name} missed!")
+                    elif attack_role == 20:
+                        attack = base_attack*(30+attacker.strength)
+                        target.health = target.health - attack
+                        print(f"Critcal Attack {attacker.race}:{attacker.name} {attacker.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack}")
+                        print(f"target is at {target.health}HP")
+                    elif attack_role > 1 and attack_role < 20:
+                        attack = (base_attack*(10+attacker.strength)+(base_attack*attack_role/2))
+
+
+                        target.health = target.health - attack
+                        print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacker.race}:{attacker.name} {attacker.last_name} for {attack}")
+                        print(f"target is at {target.health}HP")
+                        #test the movement with front kick input  
+                        #later use the type of attack in the attack prints
+#problem that when a character dies they still get one more attack becuase they finish the loop.
+
                 print('\n')
-                #target.health = target.health - i.Random_Attack_Damage()
                 if target.health <= 0:
+                    print(f"{target.race}:{target.name} {target.last_name} has died.")
                     all_entities,party_1 = player_died(target,all_entities,party_1)
             if len(party_1.entities) == 0:
-                print("Party 1 has lost")
+                print("Party 2 has Wins")
                 return "Party 2 wins"
             elif len(party_2.entities) == 0:
-                print("Party 2 has lost")
+                print("Party 1 has Wins")
                 return "Party 1 wins"
         print("-------")
         #if player modul, after the automation
@@ -302,7 +400,7 @@ def random_battle_goblin(party_1):
 
 
 def main():
-    player_1 = summon_human(Level=1, is_player = False)
+    player_1 = summon_human(Level=1, is_player = True)
     party_1 = party(entities=[player_1])
     print(party_1.entities)
 
