@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import List
 import copy
-#from entity_class_v2 import summon_human
+from entity_class_v2 import summon_human
 
-class food:
+class Consumable:
     def __init__(self,name,health_increase,quantity,inventory_parent=None,entity_parent=None,lore=None) -> None:
         self.name = name
         self.health_increase = health_increase
@@ -12,6 +12,8 @@ class food:
         self.inventory_parent = inventory_parent
         self.is_stackable = True
         self.lore = lore
+
+    #pass the owner to the eat method
 
     def eat(self):
         self.quantity -= 1
@@ -27,6 +29,7 @@ class Inventory:
     def __init__(self,parent=None) -> None:
         self.items = []
         self.parent = parent
+        #you are passing the parent to the innit not creating it
     #certain items have info to access and thats how they have there effect, e.g. armor
     #when scaping armor you can keep one of its components
 
@@ -88,24 +91,24 @@ class Inventory:
 
 def main():
     Inventory_1 = Inventory()
-    Inventory_1.add(item=food(
+    Inventory_1.add(item=Consumable(
         name="burger",
         health_increase=10,
         quantity=5
     ))
-    Inventory_1.add(item=food(
+    Inventory_1.add(item=Consumable(
         name="ice cream",
         health_increase=5,
         quantity=1
     ))
-    Inventory_1.add(item=food(
+    Inventory_1.add(item=Consumable(
         name="popcorn",
         health_increase=30,
         quantity=2
     ))
     Inventory_1.print_inventory()
     print("---------------")
-    Inventory_1.add(item=food(
+    Inventory_1.add(item=Consumable(
         name="ice cream",
         health_increase=5,
         quantity=1
@@ -117,17 +120,17 @@ def main():
 
 
     Inventory_2 = Inventory()
-    Inventory_2.add(item=food(
+    Inventory_2.add(item=Consumable(
         name="hamburger",
         health_increase=10,
         quantity=2
     ))
-    Inventory_2.add(item=food(
+    Inventory_2.add(item=Consumable(
         name="ice cream",
         health_increase=5,
         quantity=3
     ))
-    Inventory_2.add(item=food(
+    Inventory_2.add(item=Consumable(
         name="carmel_popcorn",
         health_increase=30,
         quantity=1
@@ -160,13 +163,13 @@ def main():
 
     print("\n")
     Inventory_3 = Inventory()
-    Inventory_3.add(item=food(
+    Inventory_3.add(item=Consumable(
         name="burger",
         health_increase=10,
         quantity=5
     ))
     Inventory_4 = Inventory()
-    Inventory_4.add(item=food(
+    Inventory_4.add(item=Consumable(
         name="burger",
         health_increase=10,
         quantity=4
