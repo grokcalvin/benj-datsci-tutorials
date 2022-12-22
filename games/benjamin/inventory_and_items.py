@@ -168,6 +168,7 @@ def main():
         health_increase=10,
         quantity=5
     ))
+    #code thats easy to test is good, if its hard to test then bad
     Inventory_4 = Inventory()
     Inventory_4.add(item=Consumable(
         name="burger",
