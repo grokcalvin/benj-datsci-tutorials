@@ -1,6 +1,8 @@
 import random
 from entity_class_Dec_2_2022 import random_scale_3
 from move_class import move_class
+from inventory_and_items import Inventory, food
+
 
 #trend stat, is_male is random number, and then you test if new random number is greater than that trend stat.
 #trend function, with a trend stat input and then a output
@@ -26,6 +28,7 @@ class BaseHumanoidEntity:
     def __init__(self,race,leg_length,torso_height,arm_length,size,level,level_up_points,strength,constitution,dexterity,wisdom,intelligents,charisma,is_player=False,is_male=random.randint(0,1)) -> None:
         self.is_player :bool = is_player
 
+        self.Inventory = Inventory(parent=self)
         #something that tracks stats that are the same for every entity
         #entity sizes
         #entity muslces
@@ -268,13 +271,21 @@ def battle(all_entities,party_1,party_2):
     #parties are defines in the parent function
     while len(party_1.entities) > 0 and len(party_2.entities) > 0:
         #does this update mid iteration>
-
+        #when a level up happens if strength stat in increased it ups all muscle groups by 250
         for attacker in all_entities:
             party_1_attacking = attacker in party_1.entities
             if party_1_attacking:
                 #if attacker is_player
                 #if is player, see the opposite party and type which one to attacks
-                target = party_2.entities[random.randrange(len(party_2.entities))]
+                if attacker.is_player:
+                    print(f"\nYour targets are:")
+                    for n,i in enumerate(party_2.entities):
+                        print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
+                    target_index = int(input("enter the number of the target you want to attack:"))
+                    target = party_2.entities[target_index]
+                    print("\n")
+                else:
+                    target = party_2.entities[random.randrange(len(party_2.entities))]
                 if attacker.is_player:
                     print("enter the attack you would like to do (e.g:front kick):")
                     for n, move in enumerate(attacker.move_list):
@@ -323,7 +334,15 @@ def battle(all_entities,party_1,party_2):
 
             if not party_1_attacking:
                 #if attacker is_player
-                target = party_1.entities[random.randrange(len(party_1.entities))]
+                if attacker.is_player:
+                    print(f"\nYour targets are:")
+                    for n,i in enumerate(party_1.entities):
+                        print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
+                    target_index = int(input("enter the number of the target you want to attack:"))
+                    target = party_1.entities[target_index]
+                    print("\n")
+                else:
+                    target = party_1.entities[random.randrange(len(party_1.entities))]
                 if attacker.is_player:
                     print("enter the attack you would like to do (e.g:front kick):")
                     for n, move in enumerate(attacker.move_list):
@@ -380,6 +399,8 @@ def battle(all_entities,party_1,party_2):
 
         #random target of opposite party
 
+#default dodge chance
+#random.random > (.95)**dexterity dodge
 
 def random_battle_goblin(party_1):
     #sets goblin to a party and in all_entities list
@@ -387,6 +408,7 @@ def random_battle_goblin(party_1):
     #this is a problem, everytime I rerun the function the same dead entity is used.
     entity_one = summon_goblin(Level=random.randint(1,3))
     entity_two = summon_goblin(Level=random.randint(1,3))
+    print(f"you are fighting 2 goblins!\n(1)- {entity_one.race}:{entity_one.name} {entity_one.last_name}\n(2)- {entity_two.race}:{entity_two.name} {entity_two.last_name}")
     party_2 = party(entities=[entity_one,entity_two])
     all_entities = party_1.entities + party_2.entities
     winner = battle(all_entities,party_1,party_2)
@@ -416,3 +438,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+#skill class, that gives moves and XP
+#loot tables

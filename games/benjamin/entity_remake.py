@@ -1,29 +1,31 @@
 from entity_class_Dec_2_2022 import random_scale_3
+from dataclasses import dataclass
 
-class EntityFramework():
-    def __intit__(self):
-        self.is_player : bool = False
-        
-        self.type : str
+@dataclass
+class EntityFramework:
+    type : str
 
-        self.leg_length : float
-        self.torso_height : float
-        self.arm_length : float
-        self.size : float
-        #need to deep copy when you input new values
-        self.move_dict : dict
-        #moves have directories that decid how the math works
+    leg_length : float
+    torso_height : float
+    arm_length : float
+    size : float
+    #need to deep copy when you input new values
+    move_dict : dict
+    #moves have directories that decid how the math works
 
-        self.level : int
-        self.Level_Up_Points : int
+    level : int
+    Level_Up_Points : int
 
-        self.strength : int
-        self.constitution :int
-        self.dexterity :int
+    strength : int
+    constitution :int
+    dexterity :int
 
-        self.wisdom :int
-        self.intelligents :int
-        self.charsima :int
+    wisdom :int
+    intelligents :int
+    charsima :int
+
+
+    is_player : bool = False
 
 def spawn_human(Level):
     new_entity = EntityFramework(

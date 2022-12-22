@@ -10,7 +10,6 @@ class move_class():
             self.level_multiplier = 0.3
             #the base damage used for the move
             self.move_root = 1
-            print("front kick if statement fires")
             
         if move_type == "forward gab":
             self.muscle_group = "arms_and_chest"
