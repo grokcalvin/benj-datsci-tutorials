@@ -3,7 +3,7 @@ from typing import List
 import copy
 
 class Armor:
-    def __init__(self,name,damage_absorption,inventory_parent=None,entity_parent=None,lore=None,quantity=1) -> None:
+    def __init__(self,name,damage_absorption,value=0,inventory_parent=None,entity_parent=None,lore=None,quantity=1) -> None:
         self.name = name
         self.damage_absorption = damage_absorption
         self.quantity = quantity
@@ -11,6 +11,36 @@ class Armor:
         self.inventory_parent = inventory_parent
         self.is_stackable = False
         self.lore = lore
+        self.value = value
+
+    def equip(self):
+        if self.entity_parent.armor != None:
+            self.entity_parent.Inventory.add(self.entity_parent.armor)
+        if self.entity_parent.armor == None:
+            self.entity_parent.armor = self
+        else:
+            print(f"A unknown item is in Armor slot for {self.entity_parent.name} {self.entity_parent.last_name}")
+
+class Weapon:
+    def __init__(self,name,damage,inventory_parent=None,value=0,entity_parent=None,lore=None,quantity=1) -> None:
+        self.name = name
+        self.damage_absorption = damage
+        self.quantity = quantity
+        self.entity_parent = entity_parent
+        self.inventory_parent = inventory_parent
+        self.is_stackable = False
+        self.lore = lore
+        self.value = value
+
+    def equip(self):
+        if self.entity_parent.weapon != None:
+            self.entity_parent.Inventory.add(self.entity_parent.weapon)
+        if self.entity_parent.weapon == None:
+            self.entity_parent.weapon = self
+        else:
+            print(f"A unknown item is in weapon slot for {self.entity_parent.name} {self.entity_parent.last_name}")
+
+
 
     def equip(self):
         if self.entity_parent.armor != None:

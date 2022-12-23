@@ -175,6 +175,7 @@ class BaseHumanoidEntity:
 
         #gear
         self.armor = None
+        self.weapon = None
 
         def load_move(move:str):
             #grabs a specifcially names move based on "move", then adds to dictionary and gives a object as value from the add_moves function.
