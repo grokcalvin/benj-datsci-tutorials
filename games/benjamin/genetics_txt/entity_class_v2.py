@@ -262,8 +262,9 @@ class BaseHumanoidEntity:
     def take_attack(self,attack):
         if not self.amor == None:
             attack -= self.armor.damage_absorption
-        attack = attack/(((self.arm_muscle_group+self.chest_muscle_group+self.core_muscle_group+self.leg_muscle_group)/4)/1000)
+        attack = attack/((((self.arm_muscle_group+self.chest_muscle_group+self.core_muscle_group+self.leg_muscle_group)/4)/1000)//1)
         self.health -= attack
+        return attack
 
 def summon_human(Level,is_player=False):
     entity = BaseHumanoidEntity(is_player=is_player,
