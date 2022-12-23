@@ -69,10 +69,9 @@ def text_display(title_input:title_class):
         print(f"{i.name}")
 
     select = input("Type Here:")
-
-    for i in title_input.child_display:
-        if select == i.name:
-            i.action(function=i.name,new_parent=i)
+    #exceptation handling
+    i.action(function=select,new_parent=i)
+    #enum class then pass in enum values
 
 def back_display(title_input:title_class):
     #because your going off child display you need to parent twice to find the parent of this branch
@@ -86,6 +85,9 @@ def title_list(title_object):
     for n,i in enumerate(title_object.child_display):
         print(f"({n}){i}")
 
+#you can pass a function in as a input
+
+#round counter method, changes every object to run a round pass method to boost objects
 
 
 

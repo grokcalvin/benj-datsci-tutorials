@@ -2,11 +2,32 @@ from dataclasses import dataclass
 from typing import List
 import copy
 
+class Armor:
+    def __init__(self,name,damage_absorption,inventory_parent=None,entity_parent=None,lore=None,quantity=1) -> None:
+        self.name = name
+        self.damage_absorption = damage_absorption
+        self.quantity = quantity
+        self.entity_parent = entity_parent
+        self.inventory_parent = inventory_parent
+        self.is_stackable = False
+        self.lore = lore
+
+    def equip(self):
+        if self.entity_parent.armor != None:
+            self.entity_parent.Inventory.add(self.entity_parent.armor)
+        if self.entity_parent.armor == None:
+            self.entity_parent.armor = self
+        else:
+            print(f"A unknown item is in Armor slot for {self.entity_parent.name} {self.entity_parent.last_name}")
+
+def silk_robe():
+    silk_robe = Armor(name="silk_robe",damage_absorption= 5)
+    return silk_robe
 
 class Consumable:
-    def __init__(self,name,health_increase,quantity,inventory_parent=None,entity_parent=None,lore=None) -> None:
+    def __init__(self,name,damage_absorption,quantity,inventory_parent=None,entity_parent=None,lore=None) -> None:
         self.name = name
-        self.health_increase = health_increase
+        self.health_increase = damage_absorption
         self.quantity = quantity
         self.entity_parent = entity_parent
         self.inventory_parent = inventory_parent
@@ -30,15 +51,16 @@ class Inventory:
         self.items = []
         self.parent = parent
         #you are passing the parent to the innit not creating it
-    #certain items have info to access and thats how they have there effect, e.g. armor
-    #when scaping armor you can keep one of its components
+    #certain items have info to access and thats how they have there effect, e.g. Armor
+    #when scaping Armor you can keep one of its components
 
     def add(self,item):
-        if item.name in [ii.name for ii in self.items]:
+        if item.name in [ii.name for ii in self.items] and item.is_stackable:
         #if you reduce the items in inventory by filtered list comprhension and change the object in list, does the item in non filtered list change as well.
             for i in self.items:
                 if item.name == i.name and i.is_stackable and item.is_stackable:
                     i.add_quantity(item.quantity)
+                    break
         else:
             item.inventory_parent = self
             item.entity_parent = self.parent
