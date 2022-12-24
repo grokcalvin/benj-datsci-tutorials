@@ -1,8 +1,9 @@
 import random
 from move_class import move_class
 from inventory_and_items import Inventory, Consumable, Armor, silk_robe
+from pathlib import Path
 
-
+PARENT_DIR = Path(__file__).parent
 
 def random_scale_3(base_multiplier=1):
     testfor_num = 1
@@ -93,14 +94,17 @@ def random_scale_3(base_multiplier=1):
 
 #when not in battle, option to eat food
 
-with open("male_names.txt","r") as a:
-    male_names_list = a.read().splitlines()
+male_names_file = PARENT_DIR / "male_names.txt"
+with male_names_file.open() as f:
+    male_names_list = f.read().splitlines()
 
-with open("female_names.txt","r") as a:
-    female_names_list = a.read().splitlines()
+female_names_file = PARENT_DIR / "female_names.txt"
+with female_names_file.open() as f:
+    female_names_list = f.read().splitlines()
 
-with open("last_names.txt","r") as a:
-    last_names_list = a.read().splitlines()
+last_names_file = PARENT_DIR / "last_names.txt"
+with last_names_file.open() as f:
+    last_names_list = f.read().splitlines()
 
 class BaseHumanoidEntity:
     def __init__(self,race,leg_length,torso_height,arm_length,size,level,level_up_points,strength,constitution,dexterity,wisdom,intelligents,charisma,is_player=False,is_male=random.randint(0,1)) -> None:
@@ -261,7 +265,7 @@ class BaseHumanoidEntity:
             return True
 
     def take_attack(self,attack):
-        if not self.amor == None:
+        if not self.armor is None:
             attack -= self.armor.damage_absorption
         attack = attack/((((self.arm_muscle_group+self.chest_muscle_group+self.core_muscle_group+self.leg_muscle_group)/4)/1000)//1)
         self.health -= attack
