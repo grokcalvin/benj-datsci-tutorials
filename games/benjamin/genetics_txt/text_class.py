@@ -63,7 +63,6 @@ class title_class:
 
 title = title_class(name="title",parent=None)
 title.child_display = [title_class(name="test1",parent=title),title_class(name="test2",parent=title),title_class(name="back",parent=title)]
-
 def text_display(title_input:title_class):
     for i in title_input.child_display:
         print(f"{i.name}")

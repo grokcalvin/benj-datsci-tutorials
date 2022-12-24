@@ -265,9 +265,15 @@ class BaseHumanoidEntity:
             return True
 
     def take_attack(self,attack):
-        if not self.armor is None:
+        if not self.armor == None:
             attack -= self.armor.damage_absorption
-        attack = attack/((((self.arm_muscle_group+self.chest_muscle_group+self.core_muscle_group+self.leg_muscle_group)/4)/1000)//1)
+
+        self.defualt_defence = round(((((self.arm_muscle_group+self.chest_muscle_group+self.core_muscle_group+self.leg_muscle_group)/4)/1000)**2),2)
+
+        attack = attack - self.defualt_defence
+        if attack <= 0:
+            attack = 0.01
+
         self.health -= attack
         return attack
 
@@ -408,12 +414,18 @@ def battle(all_entities,party_1,party_2):
                             actual_damage = target.take_attack(attack)
                             print(f"Critcal Attack {attacker.race}:{attacker.name} {attacker.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack} before defence")
                             print(f"attacker does {actual_damage} actual damage")
+                            if target.armor != None:
+                                print(f"armor absorbs {target.armor.damage_absorption}")
+                            print("fitness absorption is "+ str(target.defualt_defence))
                             print(f"target is at {target.health}HP")
                         elif attack_role > 1 and attack_role < 20:
 
                             attack = (base_attack*(10+attacker.strength)+(base_attack*attack_role/2))
                             actual_damage = target.take_attack(attack)
                             print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacker.race}:{attacker.name} {attacker.last_name} for {attack} before defence")
+                            if target.armor != None:
+                                print(f"armor absorbs {target.armor.damage_absorption}")
+                            print("fitness absorption is "+ str(target.defualt_defence))
                             print(f"attacker does {actual_damage} actual damage after")
                             print(f"target is at {target.health}HP")
 
@@ -465,12 +477,18 @@ def battle(all_entities,party_1,party_2):
                             actual_damage = target.take_attack(attack)
                             print(f"Critcal Attack {attacker.race}:{attacker.name} {attacker.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack} before defence")
                             print(f"attacker does {actual_damage} actual damage")
+                            if target.armor != None:
+                                print(f"armor absorbs {target.armor.damage_absorption}")
+                            print("fitness absorption is "+ str(target.defualt_defence))
                             print(f"target is at {target.health}HP")
                         elif attack_role > 1 and attack_role < 20:
 
                             attack = (base_attack*(10+attacker.strength)+(base_attack*attack_role/2))
                             actual_damage = target.take_attack(attack)
                             print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacker.race}:{attacker.name} {attacker.last_name} for {attack} before defence")
+                            if target.armor != None:
+                                print(f"armor absorbs {target.armor.damage_absorption}")
+                            print("fitness absorption is "+ str(target.defualt_defence))
                             print(f"attacker does {actual_damage} actual damage after")
                             print(f"target is at {target.health}HP")
                             #test the movement with front kick input  
@@ -488,8 +506,10 @@ def battle(all_entities,party_1,party_2):
                 print("Party 1 has Wins")
                 return "Party 1 wins"
         print("-------")
-        for en in all_entities:
-            en.round_pass()
+        #for en in all_entities:
+        #    en.round_pass()
+
+
             #this does a for loop on all boost_item.round_pass() = lower rounds_active by 1 and if <= 0 then del parent.boost_items
 
 
@@ -524,7 +544,9 @@ def random_battle_goblin(party_1):
 def main():
     player_1 = summon_human(Level=1, is_player = True)
     armor_1 = silk_robe()
+    armor_1.damage_absorption = 1
     armor_1.entity_parent = player_1
+    armor_1.equip()
     party_1 = party(entities=[player_1])
     print(party_1.entities)
 
