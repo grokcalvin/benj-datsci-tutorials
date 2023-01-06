@@ -24,7 +24,7 @@ class Armor:
 class Weapon:
     def __init__(self,name,damage,inventory_parent=None,value=0,entity_parent=None,lore=None,quantity=1) -> None:
         self.name = name
-        self.damage_absorption = damage
+        self.base_damage = damage
         self.quantity = quantity
         self.entity_parent = entity_parent
         self.inventory_parent = inventory_parent

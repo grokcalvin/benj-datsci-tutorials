@@ -111,6 +111,16 @@ class BaseHumanoidEntity:
         self.is_player :bool = is_player
 
         self.Inventory = Inventory(parent=self)
+
+
+        self.level : int = level
+        self.level_up_points : int = level_up_points
+        self.xp = 0
+        self.xp_for_level_up = 15
+        self.next_level_xp = 10
+        for a in range(self.level-1):
+            self.xp = self.xp_for_level_up
+            self.xp_for_level_up = self.xp_for_level_up *1.5
         #something that tracks stats that are the same for every entity
         #entity sizes
         #entity muslces
@@ -148,10 +158,6 @@ class BaseHumanoidEntity:
         if not self.is_male:
             self.size = self.size*0.93
 
-
-        self.level : int = level
-        self.level_up_points : int = level_up_points
-
         self.strength : int = strength
         self.constitution :int = constitution
         self.dexterity :int = dexterity
@@ -165,7 +171,6 @@ class BaseHumanoidEntity:
 
 
 
-        self.neck_muscle_group = random.randint(1,2000)
         self.chest_muscle_group = random.randint(1,2000)
         self.arm_muscle_group = random.randint(1,2000)
         self.core_muscle_group = random.randint(1,2000)
@@ -221,7 +226,41 @@ class BaseHumanoidEntity:
                 self.charsima +=1
             self.level_up_points -= 1
 
-#
+    def Use_Level_Up_Points(self):
+        while self.level_up_points > 0:
+            print("You have a available level up point type what stat you would like to increase:")
+            print(f"(0)strength {self.strength}")
+            print(f"(1)constitution {self.constitution}")
+            print(f"(2)dexterity {self.dexterity}")
+            print(f"(3)wisdom {self.wisdom}")
+            print(f"(4)intelligents {self.intelligents}")
+            print(f"(5)charsima {self.charsima}")
+
+            attribute_input = input(":")
+            if attribute_input == 1:
+                self.strength += 1
+            elif attribute_input == 2:
+                self.constitution +=1
+            elif attribute_input == 3:
+                self.dexterity +=1
+            elif attribute_input == 4:
+                self.wisdom +=1
+            elif attribute_input == 5:
+                self.intelligents +=1
+            elif attribute_input == 6:
+                self.charsima +=1
+            self.level_up_points -= 1
+
+
+    def check_for_level_up(self):
+        while self.xp >= self.xp_for_level_up:
+            self.level += 1
+            self.level_up_points += 1
+            self.xp_for_level_up = round(self.xp_for_level_up*1.5,1)
+            if not self.is_player:
+                self.Auto_Add_Level_Up_Points()
+            else:
+                self.Use_Level_Up_Points()
 
     def random_attack(self):
         #random number based on the len of move types, then use that indexed item from list to find the matching dictionary value which is a object that has damage multiplier, and need to accept parent entity values to perform a function for a output.

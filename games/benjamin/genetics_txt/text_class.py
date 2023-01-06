@@ -139,3 +139,15 @@ def title_list(title_object):
         #if name = __ and name in parent.child_list_names then execute that function:
         #
         #    function that changes the selected title's children titles and then displays them
+
+
+
+        #combat menu, options during combat.
+        #inventory
+        #attack
+        #run (sometimes)
+
+        #two modes of combat
+
+        
+        #either one takes the move up.
