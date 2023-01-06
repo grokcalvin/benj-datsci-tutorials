@@ -116,11 +116,14 @@ class BaseHumanoidEntity:
         self.level : int = level
         self.level_up_points : int = level_up_points
         self.xp = 0
-        self.xp_for_level_up = 15
-        self.next_level_xp = 10
+        self.xp_for_next_level_up = 100
         for a in range(self.level-1):
-            self.xp = self.xp_for_level_up
-            self.xp_for_level_up = self.xp_for_level_up *1.5
+            self.xp = self.xp_for_next_level_up
+            self.xp_for_next_level_up = self.xp_for_next_level_up *1.5
+        if self.is_player and self.level > 1:
+            self.Use_Level_Up_Points
+        if not self.is_player and self.level > 1:
+            self.Auto_Add_Level_Up_Points
         #something that tracks stats that are the same for every entity
         #entity sizes
         #entity muslces
@@ -200,6 +203,8 @@ class BaseHumanoidEntity:
 
         self.move_dict = {}
 
+        #use list comprhension to only display  the moves you can do filtering throught each move based on the weapon equiped
+
         for move in self.move_list:
             self.move_dict[move] = load_move(move=move)
             #print(self.move_dict)
@@ -226,6 +231,8 @@ class BaseHumanoidEntity:
                 self.charsima +=1
             self.level_up_points -= 1
 
+#a mvoe class like warrior that desides how you xp is spent on moves
+
     def Use_Level_Up_Points(self):
         while self.level_up_points > 0:
             print("You have a available level up point type what stat you would like to increase:")
@@ -236,27 +243,29 @@ class BaseHumanoidEntity:
             print(f"(4)intelligents {self.intelligents}")
             print(f"(5)charsima {self.charsima}")
 
-            attribute_input = input(":")
-            if attribute_input == 1:
+            attribute_input = int(input(":"))
+            if attribute_input == 0:
                 self.strength += 1
-            elif attribute_input == 2:
+            elif attribute_input == 1:
                 self.constitution +=1
-            elif attribute_input == 3:
+            elif attribute_input == 2:
                 self.dexterity +=1
-            elif attribute_input == 4:
+            elif attribute_input == 3:
                 self.wisdom +=1
-            elif attribute_input == 5:
+            elif attribute_input == 4:
                 self.intelligents +=1
-            elif attribute_input == 6:
+            elif attribute_input == 5:
                 self.charsima +=1
             self.level_up_points -= 1
 
-
     def check_for_level_up(self):
-        while self.xp >= self.xp_for_level_up:
+        while self.xp >= self.xp_for_next_level_up:
             self.level += 1
+            if self.is_player:
+                print(f"{self.race} {self.name} {self.last_name} is now level {self.level}")
+            #if self is in party of player
             self.level_up_points += 1
-            self.xp_for_level_up = round(self.xp_for_level_up*1.5,1)
+            self.xp_for_next_level_up = round(self.xp_for_next_level_up*1.5,1)
             if not self.is_player:
                 self.Auto_Add_Level_Up_Points()
             else:
@@ -398,6 +407,8 @@ def player_died(target,all_entities,party):
         party.entities = [p for p in party.entities if p != target]
 
         all_entities = [p for p in all_entities if p != target]
+
+    #you will need to add a system to add the died players armor and weapon to there inventory
 
     return all_entities,party
 

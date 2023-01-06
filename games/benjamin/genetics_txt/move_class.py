@@ -4,7 +4,7 @@ class move_class():
 
         self.level = 1
         self.xp = 0
-        self.next_level_xp = 10
+        self.next_level_xp = 50
 
         if move_type == "front kick":
             #legs and core
@@ -29,19 +29,19 @@ class move_class():
             self.weapon = None
 
         if move_type == "slash":
-            self.muscle_group = "arms_and_chestand core"
-            self.level_multiplier = 0.2
+            self.muscle_group = "arms_and_chest_and_core"
+            self.level_multiplier = 0.1
             #the base damage used for the move
-            self.move_root = 0.2
+            self.move_root = 0.1
             self.weapon = "Sword"
 
-    def check_for_level_up(self):
+    def check_for_level_up(self,parent):
         while self.xp >= self.next_level_xp:
             self.level += 1
             self.next_level_xp = round(self.next_level_xp*1.5,1)
 
-
-            print(f"{self.move} is now level {self.level}")
+            if parent.is_player:
+                print(f"{self.move} is now level {self.level}")
 
 #filter avialable move with self.weapon and self.weapon of move
 #skill loot table
@@ -53,7 +53,7 @@ class move_class():
         #on kill of enememy give the killing blow move a percentage of the killed target player the xp if the killing blow move
 
         weapon_bonus = 1
-        if self.weapon != None:
+        if self.weapon != None and parent.weapon != None:
             weapon_bonus = parent.weapon.base_damage
 
 
@@ -89,7 +89,7 @@ class move_class():
         if parent.is_player:
             print(f"{self.move} {self.xp}xp/{self.next_level_xp}xp")
         #game setting, show xp gain for all entities
-        self.check_for_level_up()
+        self.check_for_level_up(parent)
 
         parent.xp += 10
         parent.check_for_level_up()
