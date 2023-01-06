@@ -1,0 +1,10 @@
+combat:
+  open: 
+    - inventory
+    - attack
+    - run
+  dungeon:
+    - inventory
+    - attack
+party-interact:
+  - heal
