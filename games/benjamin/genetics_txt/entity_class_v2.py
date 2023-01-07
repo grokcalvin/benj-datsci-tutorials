@@ -120,9 +120,9 @@ class BaseHumanoidEntity:
         for a in range(self.level-1):
             self.xp = self.xp_for_next_level_up
             self.xp_for_next_level_up = self.xp_for_next_level_up *1.5
-        if self.is_player and self.level > 1:
+        if self.is_player and self.level_up_points > 0:
             self.Use_Level_Up_Points
-        if not self.is_player and self.level > 1:
+        if not self.is_player and self.level_up_points > 0:
             self.Auto_Add_Level_Up_Points
         #something that tracks stats that are the same for every entity
         #entity sizes
@@ -179,6 +179,11 @@ class BaseHumanoidEntity:
         self.core_muscle_group = random.randint(1,2000)
         self.leg_muscle_group = random.randint(1,2000)
 
+        print(f"chest muscle group {self.chest_muscle_group}")
+        print(f"arm muscle group {self.arm_muscle_group}")
+        print(f"core muscle group {self.core_muscle_group}")
+        print(f"leg muscle group {self.leg_muscle_group}")
+
         if not self.is_player:
             self.move_list = ["front kick","forward gab","upper cut"]
         else:
@@ -230,6 +235,13 @@ class BaseHumanoidEntity:
             elif random_attribute == 6:
                 self.charsima +=1
             self.level_up_points -= 1
+
+            #tied to level up points not level
+            if not self.is_player:
+                self.arm_muscle_group += round(250/((self.arm_muscle_group/1000)**2),0)
+                self.chest_muscle_group += round(250/((self.chest_muscle_group/1000)**2),0)
+                self.core_muscle_group += round(250/((self.core_muscle_group/1000)**2),0)
+                self.leg_muscle_group += round(250/((self.leg_muscle_group/1000)**2),0)
 
 #a mvoe class like warrior that desides how you xp is spent on moves
 
@@ -324,6 +336,21 @@ class BaseHumanoidEntity:
 
         self.health -= attack
         return attack
+
+    def print_stats(self):
+        print(f"chest muscle group {self.chest_muscle_group}")
+        print(f"arm muscle group {self.arm_muscle_group}")
+        print(f"core muscle group {self.core_muscle_group}")
+        print(f"leg muscle group {self.leg_muscle_group}")
+
+        print(f"")
+        print(f"")
+        print(f"")
+        print(f"")
+
+        print(f"")
+
+        print(f"level - {self.level}")
 
 def summon_human(Level,is_player=False):
     entity = BaseHumanoidEntity(is_player=is_player,
@@ -576,8 +603,9 @@ def random_battle_goblin(party_1):
     #sets goblin to a party and in all_entities list
 
     #this is a problem, everytime I rerun the function the same dead entity is used.
-    entity_one = summon_goblin(Level=random.randint(1,3))
-    entity_two = summon_goblin(Level=random.randint(1,3))
+    entity_one = summon_goblin(Level=random.randint(5,10))
+    entity_two = summon_goblin(Level=random.randint(5,10))
+    entity_one.print_stats()
     print(f"you are fighting 2 goblins!\n(1)- {entity_one.race}:{entity_one.name} {entity_one.last_name}\n(2)- {entity_two.race}:{entity_two.name} {entity_two.last_name}")
     party_2 = party(entities=[entity_one,entity_two])
     all_entities = party_1.entities + party_2.entities
