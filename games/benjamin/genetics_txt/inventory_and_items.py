@@ -40,20 +40,6 @@ class Weapon:
         else:
             print(f"A unknown item is in weapon slot for {self.entity_parent.name} {self.entity_parent.last_name}")
 
-
-
-    def equip(self):
-        if self.entity_parent.armor != None:
-            self.entity_parent.Inventory.add(self.entity_parent.armor)
-        if self.entity_parent.armor == None:
-            self.entity_parent.armor = self
-        else:
-            print(f"A unknown item is in Armor slot for {self.entity_parent.name} {self.entity_parent.last_name}")
-
-def silk_robe():
-    silk_robe = Armor(name="silk_robe",damage_absorption= 5)
-    return silk_robe
-
 class Consumable:
     def __init__(self,name,damage_absorption,quantity,inventory_parent=None,entity_parent=None,lore=None) -> None:
         self.name = name
@@ -135,7 +121,52 @@ class Inventory:
         for i in self.items:
             print(f" - {i.name} x{i.quantity}")
 
+#weapon definitions
+def rusty_short_sword():
+    rusty_short_sword = Weapon(name="rusty_short_sword",damage=5)
+    return rusty_short_sword
 
+def short_sword():
+    short_sword = Weapon(name="short_sword",damage=7)
+    return short_sword
+
+def quality_short_sword():
+    quality_short_sword = Weapon(name="quality_short_sword",damage=9)
+    return quality_short_sword
+
+
+
+def typical_rusty_sword():
+    typical_rusty_sword = Weapon(name="typical_rusty_sword",damage=8)
+    return typical_rusty_sword
+
+def typical_sword():
+    typical_sword = Weapon(name="typical_sword",damage=10)
+    return typical_sword
+
+def quality_typical_sword():
+    quality_typical_sword = Weapon(name="quality_typical_sword",damage=10)
+    return quality_typical_sword
+
+
+
+def rusty_long_sword():
+    rusty_long_sword = Weapon(name="rusty_long_sword",damage=12)
+    return rusty_long_sword
+
+def long_sword():
+    long_sword = Weapon(name="long_sword",damage=12)
+    return long_sword
+
+def quality_long_sword():
+    quality_long_sword = Weapon(name="quality_long_sword",damage=14)
+    return quality_long_sword
+
+
+
+def silk_robe():
+    silk_robe = Armor(name="silk_robe",damage_absorption= 5)
+    return silk_robe
 
 
 
