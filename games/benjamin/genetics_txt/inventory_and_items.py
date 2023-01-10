@@ -164,14 +164,48 @@ def quality_long_sword():
 
 
 
-def silk_robe():
-    silk_robe = Armor(name="silk_robe",damage_absorption= 5)
-    return silk_robe
+def basic_rags():
+    basic_rags = Armor(name="basic_rags",damage_absorption= 1)
+    return basic_rags
+
+def warriors_leather():
+    warriors_leather = Armor(name="warriors_leather",damage_absorption= 3)
+    return warriors_leather
+
+def leather_armor():
+    leather_armor = Armor(name="leather_armor",damage_absorption= 5)
+    return leather_armor
 
 
 
+def basic_rope():
+    basic_rope = Armor(name="v",damage_absorption= 2)
+    return basic_rope
+
+def silk_rope():
+    silk_rope = Armor(name="silk_rope",damage_absorption= 10)
+    return silk_rope
 
 
+
+def broken_chain_armor():
+    broken_chain_armor = Armor(name="broken_chain_armor",damage_absorption= 10)
+    return broken_chain_armor
+
+def chain_armor():
+    chain_armor = Armor(name="chain_armor",damage_absorption= 12.5)
+    return chain_armor
+
+
+
+def metal_and_leather_armor():
+    metal_and_leather_armor = Armor(name="metal_and_leather_armor",damage_absorption= 12.5)
+    return metal_and_leather_armor
+    
+def metal_arrmor():
+    metal_arrmor = Armor(name="metal_arrmor",damage_absorption= 20)
+    return metal_arrmor
+    
 def main():
     Inventory_1 = Inventory()
     Inventory_1.add(item=Consumable(
