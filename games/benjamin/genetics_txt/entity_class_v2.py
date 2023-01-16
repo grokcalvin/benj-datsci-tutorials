@@ -3,6 +3,17 @@ from move_class import move_class
 from inventory_and_items import Inventory, Consumable, Armor, silk_robe
 from pathlib import Path
 
+valid_input = False
+while valid_input == False:
+        try:
+            seed = int(input("enter seed here:(0 = random)"))
+            if seed != 0:
+                random.seed(seed)
+        except:
+            print("invalid seed, try again")
+        else:
+            valid_input = True
+
 PARENT_DIR = Path(__file__).parent
 
 def random_scale_3(base_multiplier=1):
