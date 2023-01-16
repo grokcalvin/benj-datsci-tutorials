@@ -454,20 +454,33 @@ def battle(all_entities,party_1,party_2):
                     #if attacker is_player
                     #if is player, see the opposite party and type which one to attacks
                     if attacker.is_player:
-                        print(f"\nYour targets are:")
-                        for n,i in enumerate(party_2.entities):
-                            print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
-                        target_index = int(input("enter the number of the target you want to attack:"))
-                        target = party_2.entities[target_index]
-                        print("\n")
+                        valid_input = False
+                        while valid_input == False:
+                            print(f"\nYour targets are:")
+                            for n,i in enumerate(party_2.entities):
+                                print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
+                            try:
+                                target_index = int(input("enter the number of the target you want to attack:"))
+                                target = party_2.entities[target_index]
+                            except:
+                                print("invalid input, try again.")
+                            else:
+                                valid_input = True
+                            print("\n")
                     else:
                         target = party_2.entities[random.randrange(len(party_2.entities))]
                     if attacker.is_player:
-                        print("enter the attack you would like to do (e.g:front kick):")
-                        for n, move in enumerate(attacker.move_list):
-                            print(f"({n}) - {move}")
-
-                        base_attack,attack_type = attacker.choose_attack()
+                        valid_input = False
+                        while not valid_input:
+                            print("enter the attack you would like to do (e.g:front kick):")
+                            for n, move in enumerate(attacker.move_list):
+                                print(f"({n}) - {move}")
+                            try:
+                                base_attack,attack_type = attacker.choose_attack()
+                            except:
+                                print("\ninvalid input, try again")
+                            else:
+                                valid_input = True
                     else:
                         base_attack,attack_type = attacker.random_attack()
 
@@ -490,10 +503,10 @@ def battle(all_entities,party_1,party_2):
                             attack = base_attack*(30+attacker.strength)
                             actual_damage = target.take_attack(attack)
                             print(f"Critcal Attack {attacker.race}:{attacker.name} {attacker.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack} before defence")
-                            print(f"attacker does {actual_damage} actual damage")
                             if target.armor != None:
                                 print(f"armor absorbs {target.armor.damage_absorption}")
                             print("fitness absorption is "+ str(target.defualt_defence))
+                            print(f"attacker does {actual_damage} actual damage")
                             print(f"target is at {target.health}HP")
                         elif attack_role > 1 and attack_role < 20:
 
@@ -518,20 +531,33 @@ def battle(all_entities,party_1,party_2):
                 else:
                     #if attacker is_player
                     if attacker.is_player:
-                        print(f"\nYour targets are:")
-                        for n,i in enumerate(party_1.entities):
-                            print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
-                        target_index = int(input("enter the number of the target you want to attack:"))
-                        target = party_1.entities[target_index]
-                        print("\n")
+                        valid_input = False
+                        while not valid_input:
+                            print(f"\nYour targets are:")
+                            for n,i in enumerate(party_1.entities):
+                                print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
+                            target_index = int(input("enter the number of the target you want to attack:"))
+                            try:
+                                target = party_1.entities[target_index]
+                            except:
+                                print("invalid number, try again:")
+                            else:
+                                valid_input = True
+                            print("\n")
                     else:
                         target = party_1.entities[random.randrange(len(party_1.entities))]
                     if attacker.is_player:
-                        print("enter the attack you would like to do (e.g:front kick):")
-                        for n, move in enumerate(attacker.move_list):
-                            print(f"({n}) - {move}")
-
-                        base_attack,attack_type = attacker.choose_attack()
+                        valid_input = False
+                        while not valid_input:
+                            print("enter the attack you would like to do (e.g:front kick):")
+                            for n, move in enumerate(attacker.move_list):
+                                print(f"({n}) - {move}")
+                            try:
+                                base_attack,attack_type = attacker.choose_attack()
+                            except:
+                                print("\ninvalid input, try again\n")
+                            else:
+                                valid_input = True
                     else:
                         base_attack,attack_type = attacker.random_attack()
 
@@ -553,10 +579,10 @@ def battle(all_entities,party_1,party_2):
                             attack = base_attack*(30+attacker.strength)
                             actual_damage = target.take_attack(attack)
                             print(f"Critcal Attack {attacker.race}:{attacker.name} {attacker.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack} before defence")
-                            print(f"attacker does {actual_damage} actual damage")
                             if target.armor != None:
                                 print(f"armor absorbs {target.armor.damage_absorption}")
                             print("fitness absorption is "+ str(target.defualt_defence))
+                            print(f"attacker does {actual_damage} actual damage")
                             print(f"target is at {target.health}HP")
                         elif attack_role > 1 and attack_role < 20:
 

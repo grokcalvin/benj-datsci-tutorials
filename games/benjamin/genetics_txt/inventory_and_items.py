@@ -182,9 +182,9 @@ def basic_rope():
     basic_rope = Armor(name="v",damage_absorption= 2)
     return basic_rope
 
-def silk_rope():
-    silk_rope = Armor(name="silk_rope",damage_absorption= 10)
-    return silk_rope
+def silk_robe():
+    silk_robe = Armor(name="silk_robe",damage_absorption= 10)
+    return silk_robe
 
 
 
