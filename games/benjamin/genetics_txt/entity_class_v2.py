@@ -1,7 +1,11 @@
 import random
 from move_class import move_class
-from inventory_and_items import Inventory, Consumable, Armor, silk_robe
+from inventory_and_items import Inventory, Consumable, Armor, silk_robe, rusty_short_sword
 from pathlib import Path
+import time
+import pools
+from dataclasses import dataclass
+
 
 valid_input = False
 while valid_input == False:
@@ -16,83 +20,42 @@ while valid_input == False:
 
 PARENT_DIR = Path(__file__).parent
 
-def random_scale_3(base_multiplier=1):
-    testfor_num = 1
-    base = (random.random()//0.001)/1000
-    output = 1
-    baseline = 0
-    testfor_num = testfor_num/10
-    def random_scale_short(base,testfor_num,output):
-        while True:
-            if base <= testfor_num:
-                output = output*0.8
-            elif base <= testfor_num*2:
-                output = output*0.84
-                return output
-            elif base <= testfor_num*4:
-                output = output*0.88
-                return output
-            elif base <= testfor_num*6:
-                output = output*0.92
-                return output
-            elif base <= testfor_num*8:
-                output = output*0.96
-                return output
-            else:
-                return output
-            testfor_num = testfor_num/10
 
-    def random_scale_average(base,testfor_num,output,baseline):
-        change_scale = 1
-        for i in range(2):
-            if base >= baseline+testfor_num*8:
-                #output = output*(1+change_scale*0.1)
-                output = output*1.1
-                baseline = baseline+testfor_num*8
-            elif base >= baseline+testfor_num*6:
-                output = output*1.05
-                baseline = baseline+testfor_num*6
-            elif base >= baseline+testfor_num*4:
-                output = output
-                baseline = baseline+testfor_num*4
-            elif base >= baseline+testfor_num*2:
-                output = output*0.96
-                baseline = baseline+testfor_num*2
-            elif base >= 0:
-                output = output*0.92
-            testfor_num= testfor_num/10
-            change_scale = change_scale/10
-        return (output//0.001)/1000
+def random_scale(base=1):
+    types_of_scale = [
+        "Average",
+        "Small",
+        "Very Small",
+        "Super Small",
+        "Big",
+        "Very Big",
+        "Super Big"
+    ]
+    weights = [
+        80,
+        9,
+        0.9,
+        0.1,
+        9,
+        0.9,
+        0.1,
+    ]
+    scale_type = random.choices(types_of_scale,weights)[0]
 
-    def random_scale_tall(base,testfor_num,output,baseline):
-        while True:
-            if base >= baseline+testfor_num*9:
-                baseline = baseline+testfor_num*9
-                output = output*1.25
-            elif base >= baseline+testfor_num*8:
-                output = output*1.20
-                return output
-            elif base >= baseline+testfor_num*6:
-                output = output*1.15
-                return output
-            elif base >= baseline+testfor_num*4:
-                output = output*1.10
-                return output
-            elif base >= baseline+testfor_num*2:
-                output = output*1.05
-                return output
-            else:
-                return output
-            testfor_num = testfor_num/10
-
-    if base <= testfor_num:
-        return base_multiplier*((random_scale_short(base,testfor_num,output)//0.001)/1000)
-                #0+0.1  next is 0.9 + 0.1        #0+0.9  next needs to be 0.9+ 0.09
-    if base > baseline+testfor_num and base < baseline+testfor_num*9:
-        return base_multiplier*(random_scale_average(base,testfor_num,output,baseline))
-    if base >= baseline+testfor_num*9:
-        return base_multiplier*((random_scale_tall(base,testfor_num,output,baseline)//0.001)/1000)
-
+    if scale_type == "Average":
+        return random.uniform(0.9,1.1)*base
+    if scale_type == "Small":
+        return random.uniform(0.8,0.9)*base
+    if scale_type == "Very SHort":
+        return random.uniform(0.64,0.8)*base
+    if scale_type == "Super Short":
+        return random.uniform(0.51,0.64)*base
+    if scale_type == "Big":
+        return random.uniform(1.1,1.25)*base
+    if scale_type == "Very Big":
+        return random.uniform(1.25,1.56)*base
+    if scale_type == "Super Big":
+        return random.uniform(1.56,1.95)*base
 
 #trend stat, is_male is random number, and then you test if new random number is greater than that trend stat.
 #trend function, with a trend stat input and then a output
@@ -190,20 +153,43 @@ class BaseHumanoidEntity:
         self.core_muscle_group = random.randint(1,2000)
         self.leg_muscle_group = random.randint(1,2000)
 
-        print(f"chest muscle group {self.chest_muscle_group}")
-        print(f"arm muscle group {self.arm_muscle_group}")
-        print(f"core muscle group {self.core_muscle_group}")
-        print(f"leg muscle group {self.leg_muscle_group}")
+        #print(f"chest muscle group {self.chest_muscle_group}")
+        #print(f"arm muscle group {self.arm_muscle_group}")
+        #print(f"core muscle group {self.core_muscle_group}")
+        #print(f"leg muscle group {self.leg_muscle_group}")
 
-        if not self.is_player:
-            self.move_list = ["front kick","forward gab","upper cut"]
-        else:
-            self.move_list = ["front kick","forward gab","upper cut"]
 
+        #MAYBE have level ups that unlock moves.
 
         #gear
         self.armor = None
         self.weapon = None
+
+        #classes
+        class_list = ["Warrior","Martial Artist"]
+        if not self.is_player:
+            self.character_class = class_list[random.randint(0,(len(class_list))-1)]
+
+        else:
+            valid_input = False
+            while not valid_input:
+                try:
+                    print("enter the class that you would like.")
+                    for n,s in enumerate(class_list):
+                        print(f"({n}) {s}")
+                    input1 = input()
+                    self.character_class = class_list[int(input1)]
+                except:
+                    print("invalid input try again!\n")
+                else:
+                    valid_input = True
+                    print(f"you are now a {self.character_class}\n")
+
+        #moves
+        if self.character_class == "Warrior":
+            self.move_list = ["slash","stab","punch"]
+        if self.character_class == "Martial Artist":
+            self.move_list = ["front kick","forward gab","upper cut"]           
 
         def load_move(move:str):
             #grabs a specifcially names move based on "move", then adds to dictionary and gives a object as value from the add_moves function.
@@ -223,8 +209,50 @@ class BaseHumanoidEntity:
 
         for move in self.move_list:
             self.move_dict[move] = load_move(move=move)
-            #print(self.move_dict)
+            print(self.move_dict)
 
+
+
+        self.get_loot()
+        if not self.is_player:
+            print(f"{self.race} {self.level} weapon {self.weapon.name}")
+            print(f"{self.race} {self.level} armor {self.armor.name}")
+
+
+    def get_loot(self):
+        if not self.is_player:
+            if self.level >=15:
+                weapon = pools.select_from_pool(pools.teir_3_weapon_pool,roles=1)[0]
+                weapon.add_parent_entity(parent=self)
+                weapon.equip()
+            elif self.level >=10:
+                weapon = pools.select_from_pool(pools.teir_2_weapon_pool,roles=1)[0]
+                weapon.add_parent_entity(parent=self)
+                weapon.equip()
+            elif self.level >=5:
+                weapon = pools.select_from_pool(pools.teir_1_weapon_pool,roles=1)[0]
+                weapon.add_parent_entity(parent=self)
+                weapon.equip()
+
+
+            if self.level >=15:
+                armor = pools.select_from_pool(pools.teir_3_armor_pool,roles=1)[0]
+                armor.add_parent_entity(parent=self)
+                armor.equip()
+            elif self.level >=10:
+                armor = pools.select_from_pool(pools.teir_2_armor_pool,roles=1)[0]
+                armor.add_parent_entity(parent=self)
+                armor.equip()
+            elif self.level >=5:
+                armor = pools.select_from_pool(pools.teir_1_armor_pool,roles=10)[0]
+                armor.add_parent_entity(parent=self)
+                armor.equip()
+        if self.is_player:
+                weapon = rusty_short_sword()
+                weapon.add_parent_entity(parent=self)
+                weapon.equip()
+
+        #later have a loot table that has chances for swords and armor then select the best one.
     def Set_Health(self):
         self.max_health = (((self.leg_length**2+self.arm_length**2+self.torso_height**2)/3)*self.size**2)*(70+(10*self.constitution))//0.001/1000
         self.health = self.max_health        
@@ -354,10 +382,10 @@ class BaseHumanoidEntity:
         print(f"core muscle group {self.core_muscle_group}")
         print(f"leg muscle group {self.leg_muscle_group}")
 
-        print(f"")
-        print(f"")
-        print(f"")
-        print(f"")
+        print(f"Leg length {self.leg_length}")
+        print(f"torso height  {self.torso_height}")
+        print(f"arm length {self.arm_length}")
+        print(f"size {self.size}")
 
         print(f"")
 
@@ -366,10 +394,10 @@ class BaseHumanoidEntity:
 def summon_human(Level,is_player=False):
     entity = BaseHumanoidEntity(is_player=is_player,
                                 race= "Human",
-                                leg_length= random_scale_3(1),
-                                torso_height = random_scale_3(1),
-                                arm_length = random_scale_3(1),
-                                size = random_scale_3(1),
+                                leg_length= random_scale(1),
+                                torso_height = random_scale(1),
+                                arm_length = random_scale(1),
+                                size = random_scale(1),
 
                                 level = Level,
                                 level_up_points = Level - 1,
@@ -388,10 +416,10 @@ def summon_human(Level,is_player=False):
 def summon_goblin(Level,is_player=False):
     entity = BaseHumanoidEntity(is_player=is_player,
                                 race= "Goblin",
-                                leg_length= random_scale_3(0.8),
-                                torso_height = random_scale_3(1),
-                                arm_length = random_scale_3(1),
-                                size = random_scale_3(0.7),
+                                leg_length= random_scale(0.8),
+                                torso_height = random_scale(1),
+                                arm_length = random_scale(1),
+                                size = random_scale(0.7),
 
                                 level = Level,
                                 level_up_points = Level - 1,
@@ -410,10 +438,10 @@ def summon_goblin(Level,is_player=False):
 def summon_elf(Level,is_player=False):
     entity = BaseHumanoidEntity(is_player=is_player,
                                 race= "Elf",
-                                leg_length= random_scale_3(1),
-                                torso_height = random_scale_3(1.1),
-                                arm_length = random_scale_3(1),
-                                size = random_scale_3(1.1),
+                                leg_length= random_scale(1),
+                                torso_height = random_scale(1.1),
+                                arm_length = random_scale(1),
+                                size = random_scale(1.1),
 
                                 level = Level,
                                 level_up_points = Level - 1,
@@ -460,7 +488,7 @@ def battle(all_entities,party_1,party_2):
         for attacker in all_entities:
             party_1_attacking = attacker in party_1.entities
             if attacker.health > 0:
-
+                time.sleep(5)
                 if party_1_attacking:
                     #if attacker is_player
                     #if is player, see the opposite party and type which one to attacks
@@ -469,6 +497,7 @@ def battle(all_entities,party_1,party_2):
                         while valid_input == False:
                             print(f"\nYour targets are:")
                             for n,i in enumerate(party_2.entities):
+                                time.sleep(1)
                                 print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
                             try:
                                 target_index = int(input("enter the number of the target you want to attack:"))
@@ -642,7 +671,6 @@ def random_battle_goblin(party_1):
     #this is a problem, everytime I rerun the function the same dead entity is used.
     entity_one = summon_goblin(Level=random.randint(5,10))
     entity_two = summon_goblin(Level=random.randint(5,10))
-    entity_one.print_stats()
     print(f"you are fighting 2 goblins!\n(1)- {entity_one.race}:{entity_one.name} {entity_one.last_name}\n(2)- {entity_two.race}:{entity_two.name} {entity_two.last_name}")
     party_2 = party(entities=[entity_one,entity_two])
     all_entities = party_1.entities + party_2.entities
@@ -657,6 +685,7 @@ def random_battle_goblin(party_1):
 
 
 def main():
+    random_scale(1)
     player_1 = summon_human(Level=1, is_player = True)
     armor_1 = silk_robe()
     armor_1.damage_absorption = 1

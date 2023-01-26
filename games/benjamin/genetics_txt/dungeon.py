@@ -7,8 +7,15 @@ class Room:
         self.right = right
         self.texture = "[ ]"
 
+        self.coming_from_value = None
+
+        self.room = None
+
     def __str__(self):
         return self.texture
+    
+    def room_gen(self):
+        pass
 
 #array and snake
 class land_chunk:
@@ -25,7 +32,13 @@ class land_chunk:
         self.y_max_index = y -1
 
 
+#import land chunk, have 4 tile values that bring you to the next room
+#[^],[!],[<],[>]
+#spawn area based on "coming from value"
+#main map, then moving around, global, each tile has a area 
+#each room has random selection from tool based on its left, right, up, down values
 
+# way to make rooms by moving around and typing a texture input to replace tile then enetering "done" to make map
 
 
 
@@ -66,7 +79,7 @@ class snake_room_gen:
                 if not temp_y_index == 0:
                     possible_moves.append("Up")
                 if not temp_y_index == area.y_max_index:
-                    possible_moves.append("down")   
+                    possible_moves.append("Down")   
                 if not temp_x_index == 0:
                     possible_moves.append("Left")
                 if not temp_x_index == area.x_max_index:

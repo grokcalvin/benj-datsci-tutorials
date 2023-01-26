@@ -29,11 +29,25 @@ class move_class():
             self.weapon = None
 
         if move_type == "slash":
-            self.muscle_group = "arms_and_chest_and_core"
-            self.level_multiplier = 0.1
+            self.muscle_group = "arms_and_chest"
+            self.level_multiplier = 0.2
             #the base damage used for the move
             self.move_root = 0.1
             self.weapon = "Sword"
+
+        if move_type == "stab":
+            self.muscle_group = "arms_and_chest"
+            self.level_multiplier = 0.4
+            #the base damage used for the move
+            self.move_root = 0.75
+            self.weapon = "Sword"
+
+        if move_type == "punch":
+            self.muscle_group = "arms_and_chest"
+            self.level_multiplier = 0.2
+            #the base damage used for the move
+            self.move_root = 0.7
+            self.weapon = None
 
     def check_for_level_up(self,parent):
         while self.xp >= self.next_level_xp:
@@ -73,13 +87,16 @@ class move_class():
         #have a slice move or varaitions that use a weapon object as a multiplier
 
         if self.muscle_group == "arms_and_chest":
-            Damage_Factor = (parent.size**2)*((parent.arm_length**2)*(parent.torso_height**2)/2)*((parent.arm_muscle_group+parent.chest_muscle_group)/2)*self.move_root*(1+self.level_multiplier*(self.level-1))
+            Damage_Factor = (parent.size**2)*((parent.arm_length**2)*(parent.torso_height**2)/2)*((parent.arm_muscle_group+parent.chest_muscle_group)/2)*self.move_root*(1+self.level_multiplier*(self.level-1))*weapon_bonus
+
 
         if self.muscle_group == "arms_and_chest_and_core":
-            Damage_Factor = (parent.size**2)*(parent.torso_height**2)*((parent.arm_muscle_group+parent.chest_muscle_group+parent.core_muscle_group)/3)*self.move_root*(1+self.level_multiplier*(self.level-1))
+            Damage_Factor = (parent.size**2)*(parent.torso_height**2)*((parent.arm_muscle_group+parent.chest_muscle_group+parent.core_muscle_group)/3)*self.move_root*(1+self.level_multiplier*(self.level-1))*weapon_bonus
+
 
         if self.muscle_group == "full_body":
-            Damage_Factor = (parent.size**2)*((parent.arm_length**2)*(parent.torso_height**2)*(parent.leg_length**2)/3)*((parent.arm_muscle_group+parent.chest_muscle_group+parent.core_muscle_group+parent.leg_muscle_group)/4)*self.move_root*(1+self.level_multiplier*(self.level-1))
+            Damage_Factor = (parent.size**2)*((parent.arm_length**2)*(parent.torso_height**2)*(parent.leg_length**2)/3)*((parent.arm_muscle_group+parent.chest_muscle_group+parent.core_muscle_group+parent.leg_muscle_group)/4)*self.move_root*(1+self.level_multiplier*(self.level-1))*weapon_bonus
+
 
 
         if self.muscle_group == "lower_body":

@@ -16,18 +16,23 @@ class Armor:
     def equip(self):
         if self.entity_parent.armor != None:
             self.entity_parent.Inventory.add(self.entity_parent.armor)
+            self.entity_parent.armor = self
         if self.entity_parent.armor == None:
             self.entity_parent.armor = self
         else:
             print(f"A unknown item is in Armor slot for {self.entity_parent.name} {self.entity_parent.last_name}")
+
+    def add_parent_entity(self,parent):
+        self.inventory_parent = parent.Inventory
+        self.entity_parent = parent
 
 class Weapon:
     def __init__(self,name,damage,inventory_parent=None,value=0,entity_parent=None,lore=None,quantity=1) -> None:
         self.name = name
         self.base_damage = damage
         self.quantity = quantity
-        self.entity_parent = entity_parent
-        self.inventory_parent = inventory_parent
+        self.entity_parent = entity_parent #the entity it belongs to
+        self.inventory_parent = inventory_parent #the inventory it belongs to
         self.is_stackable = False
         self.lore = lore
         self.value = value
@@ -35,10 +40,15 @@ class Weapon:
     def equip(self):
         if self.entity_parent.weapon != None:
             self.entity_parent.Inventory.add(self.entity_parent.weapon)
+            self.entity_parent.weapon = self
         if self.entity_parent.weapon == None:
             self.entity_parent.weapon = self
         else:
             print(f"A unknown item is in weapon slot for {self.entity_parent.name} {self.entity_parent.last_name}")
+
+    def add_parent_entity(self,parent):
+        self.inventory_parent = parent.Inventory
+        self.entity_parent = parent
 
 class Consumable:
     def __init__(self,name,damage_absorption,quantity,inventory_parent=None,entity_parent=None,lore=None) -> None:
@@ -61,6 +71,10 @@ class Consumable:
             self.inventory_parent.remove(self)
     def add_quantity(self,item_quantity):
         self.quantity += item_quantity
+
+    def add_parent_entity(self,parent):
+        self.inventory_parent = parent.Inventory
+        self.entity_parent = parent
 
 class Inventory:
     def __init__(self,parent=None) -> None:
@@ -162,7 +176,7 @@ def quality_long_sword():
     quality_long_sword = Weapon(name="quality_long_sword",damage=14)
     return quality_long_sword
 
-
+#armor definitions
 
 def basic_rags():
     basic_rags = Armor(name="basic_rags",damage_absorption= 1)
@@ -178,9 +192,9 @@ def leather_armor():
 
 
 
-def basic_rope():
-    basic_rope = Armor(name="v",damage_absorption= 2)
-    return basic_rope
+def basic_robe():
+    basic_robe = Armor(name="v",damage_absorption= 2)
+    return basic_robe
 
 def silk_robe():
     silk_robe = Armor(name="silk_robe",damage_absorption= 10)
@@ -189,7 +203,7 @@ def silk_robe():
 
 
 def broken_chain_armor():
-    broken_chain_armor = Armor(name="broken_chain_armor",damage_absorption= 10)
+    broken_chain_armor = Armor(name="broken_chain_armor",damage_absorption= 7.5)
     return broken_chain_armor
 
 def chain_armor():
@@ -206,6 +220,8 @@ def metal_arrmor():
     metal_arrmor = Armor(name="metal_arrmor",damage_absorption= 20)
     return metal_arrmor
     
+
+
 def main():
     Inventory_1 = Inventory()
     Inventory_1.add(item=Consumable(
@@ -269,15 +285,6 @@ def main():
     Inventory_2.remove_items(Inventory_2)
     Inventory_2.print_inventory()
 
-    human_1 = summon_human(Level=3)
-    print(human_1.max_health)
-    human_1.health -= 30
-    print(human_1.health)
-    print(Inventory_1.items[1].name)
-    Inventory_1.items[1].entity_parent = human_1
-    Inventory_1.items[1].eat()
-    print(human_1.health)
-
     print("\n")
     Inventory_3 = Inventory()
     Inventory_3.add(item=Consumable(
@@ -296,7 +303,7 @@ def main():
     Inventory_3.remove(Inventory_4.items[0])
     Inventory_3.print_inventory()
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()
 
 #loot tables

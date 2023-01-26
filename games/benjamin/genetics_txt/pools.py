@@ -1,4 +1,5 @@
 import random
+import inventory_and_items
 
 class Entry:
     def __init__(self,value,weight=int) -> None:
@@ -58,8 +59,53 @@ pool_1_15 = [
     Entry(value=select_from_pool(pool_6_10,5),weight=3),
     Entry(value=select_from_pool(pool_11_15,5),weight=10),
 ]
+
+teir_1_weapon_pool = [
+    Entry(value=inventory_and_items.rusty_short_sword(),weight=10),
+    Entry(value=inventory_and_items.short_sword(),weight=5),
+    Entry(value=inventory_and_items.quality_short_sword(),weight=5),
+    Entry(value=inventory_and_items.typical_rusty_sword(),weight=3),
+    Entry(value=inventory_and_items.typical_sword(),weight=1)
+]
+
+teir_2_weapon_pool = [
+    Entry(value=inventory_and_items.rusty_short_sword(),weight=10),
+    Entry(value=inventory_and_items.short_sword(),weight=5),
+    Entry(value=inventory_and_items.quality_short_sword(),weight=5),
+    Entry(value=inventory_and_items.typical_rusty_sword(),weight=3),
+    Entry(value=inventory_and_items.typical_sword(),weight=1)
+]
+
+teir_3_weapon_pool = [
+    Entry(value=inventory_and_items.rusty_short_sword(),weight=10),
+    Entry(value=inventory_and_items.short_sword(),weight=5),
+    Entry(value=inventory_and_items.quality_short_sword(),weight=5),
+    Entry(value=inventory_and_items.typical_rusty_sword(),weight=3),
+    Entry(value=inventory_and_items.typical_sword(),weight=1)
+]
+
+
+
+
+teir_1_armor_pool = [
+    Entry(value=inventory_and_items.basic_rags(),weight=10),
+    Entry(value=inventory_and_items.warriors_leather(),weight=10),
+    Entry(value=inventory_and_items.leather_armor(),weight=5),
+    Entry(value=inventory_and_items.broken_chain_armor(),weight=2)
+]
+
+teir_2_armor_pool = [
+    Entry(value=inventory_and_items.leather_armor(),weight=15),
+    Entry(value=inventory_and_items.broken_chain_armor(),weight=10),
+    Entry(value=inventory_and_items.metal_and_leather_armor(),weight=5)
+]
+
+teir_3_armor_pool = [
+    Entry(value=inventory_and_items.chain_armor(),weight=15),
+    Entry(value=inventory_and_items.metal_and_leather_armor(),weight=15)
+]
 #weapon functions
 #armor functions
 #food items
-
-print(select_from_pool(pool_1_15,5))
+if __name__ =="__main__":
+    print(select_from_pool(pool_1_15,5))
