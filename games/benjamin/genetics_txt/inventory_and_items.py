@@ -60,9 +60,9 @@ class Consumable:
         self.is_stackable = True
         self.lore = lore
 
-    #pass the owner to the eat method
+    #pass the owner to the use method
 
-    def eat(self):
+    def use(self):
         self.quantity -= 1
         self.entity_parent.health += self.health_increase
         if self.entity_parent.health > self.entity_parent.max_health:
@@ -75,6 +75,132 @@ class Consumable:
     def add_parent_entity(self,parent):
         self.inventory_parent = parent.Inventory
         self.entity_parent = parent
+
+#effects are placed in an entities effect list and every round in a battle it is subtracted 
+#reorruring and one and done when cycling through the effects in the effects list, if an effect has Is_recurring it runs the reorrering method
+#on round durration <= 0 activate remove
+#the use function is ran externally when you use the item
+
+class effect():
+    def __init__(self,parent_entity,name,is_recurring=False,round_duration=1,health_increase=None,strength=None,constitution=None,dexterity=None,wisdom=None,intelligents=None,charsima=None,size_increase=None):
+        self.parent = parent_entity
+        self.round_durarion = round_duration
+        self.name = name
+        self.is_recurring = is_recurring
+
+        self.health_increase = health_increase
+
+        self.strength = strength
+        self.constitution = constitution
+        self.dexterity = dexterity
+        self.wisdom = wisdom
+        self.intelligents = intelligents
+        self.charisma = charsima
+
+        self.size_increase = size_increase
+    #pass the owner to the use method
+            #print(f"(0)strength {self.strength}")
+            #print(f"(1)constitution {self.constitution}")
+            #print(f"(2)dexterity {self.dexterity}")
+            #print(f"(3)wisdom {self.wisdom}")
+            #print(f"(4)intelligents {self.intelligents}")
+            #print(f"(5)charsima {self.charsima}")
+    def use(self):
+        if self.health_increase != None:
+            self.parent.health += self.health_increase
+            if self.parent.health >= self.parent.max_health:
+                self.parent.health = self.parent.max_health
+
+
+        if self.strength != None:
+            self.parent.strength += self.strength
+
+        if self.constitution != None:
+            self.parent.constitution += self.constitution
+
+        if self.dexterity != None:
+            self.parent.dexterity += self.dexterity
+
+        if self.wisdom != None:
+            self.parent.wisdom += self.wisdom
+
+        if self.intelligents != None:
+            self.parent.intelligents += self.intelligents
+
+        if self.charisma != None:
+             self.parent.charisma += self.charisma     
+
+        if self.size_increase != None:
+             self.parent.size =  self.parent.size * self.size_increase       
+
+    def recurring(self):
+        if self.health_increase != None:
+            self.parent.health += self.health_increase
+            if self.parent.health >= self.parent.max_health:
+                self.parent.health = self.parent.max_health
+
+
+        if self.strength != None:
+            self.parent.strength += self.strength
+
+        if self.constitution != None:
+            self.parent.constitution += self.constitution
+
+        if self.dexterity != None:
+            self.parent.dexterity += self.dexterity
+
+        if self.wisdom != None:
+            self.parent.wisdom += self.wisdom
+
+        if self.intelligents != None:
+            self.parent.intelligents += self.intelligents
+
+        if self.charisma != None:
+             self.parent.charisma += self.charisma     
+
+        if self.size_increase != None:
+             self.parent.size =  self.parent.size * self.size_increase
+
+    def remove(self):
+        name_list = [e.name for e in self.parent.effects]
+        index = name_list.index(self.name)
+        self.parent.effects.pop(index)
+
+        #add a lore system on items to be viewed on item inspection
+
+        if self.is_is_recurring:
+            pass
+        else:
+            if self.health_increase != None:
+                self.parent.health -= self.health_increase
+                if self.parent.health >= self.parent.max_health:
+                    self.parent.health = self.parent.max_health
+
+
+            if self.strength != None:
+                self.parent.strength -= self.strength
+
+            if self.constitution != None:
+                self.parent.constitution -= self.constitution
+
+            if self.dexterity != None:
+                self.parent.dexterity -= self.dexterity
+
+            if self.wisdom != None:
+                self.parent.wisdom -= self.wisdom
+
+            if self.intelligents != None:
+                self.parent.intelligents -= self.intelligents
+
+            if self.charisma != None:
+                self.parent.charisma -= self.charisma     
+
+            if self.size_increase != None:
+                self.parent.size =  self.parent.size / self.size_increase
+
+#have a armor effects list or have a effect be linked to armor
+
+#add effects variable in entity class
 
 class Inventory:
     def __init__(self,parent=None) -> None:
