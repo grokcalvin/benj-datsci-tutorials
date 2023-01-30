@@ -1,10 +1,11 @@
 import random
-from move_class import move_class
+from move_class import move_class, Move_Types
 from inventory_and_items import Inventory, Consumable, Armor, silk_robe, rusty_short_sword
 from pathlib import Path
 import time
 import pools
 from dataclasses import dataclass
+from enum import Enum
 
 
 valid_input = False
@@ -46,7 +47,7 @@ def random_scale(base=1):
         return random.uniform(0.9,1.1)*base
     if scale_type == "Small":
         return random.uniform(0.8,0.9)*base
-    if scale_type == "Very SHort":
+    if scale_type == "Very Short":
         return random.uniform(0.64,0.8)*base
     if scale_type == "Super Short":
         return random.uniform(0.51,0.64)*base
@@ -79,6 +80,10 @@ with female_names_file.open() as f:
 last_names_file = PARENT_DIR / "last_names.txt"
 with last_names_file.open() as f:
     last_names_list = f.read().splitlines()
+
+class Occupation(Enum):
+    WARRIOR = "Warrior"
+    MARTIAL_ARTIST = "Martial Artist"
 
 class BaseHumanoidEntity:
     def __init__(self,race,leg_length,torso_height,arm_length,size,level,level_up_points,strength,constitution,dexterity,wisdom,intelligents,charisma,is_player=False,is_male=random.randint(0,1)) -> None:
@@ -166,7 +171,7 @@ class BaseHumanoidEntity:
         self.weapon = None
 
         #classes
-        class_list = ["Warrior","Martial Artist"]
+        class_list = [Occupation.WARRIOR,Occupation.MARTIAL_ARTIST]
         if not self.is_player:
             self.character_class = class_list[random.randint(0,(len(class_list))-1)]
 
@@ -176,7 +181,7 @@ class BaseHumanoidEntity:
                 try:
                     print("enter the class that you would like.")
                     for n,s in enumerate(class_list):
-                        print(f"({n}) {s}")
+                        print(f"({n}) {s.value}")
                     input1 = input()
                     self.character_class = class_list[int(input1)]
                 except:
@@ -186,10 +191,18 @@ class BaseHumanoidEntity:
                     print(f"you are now a {self.character_class}\n")
 
         #moves
-        if self.character_class == "Warrior":
-            self.move_list = ["slash","stab","punch"]
-        if self.character_class == "Martial Artist":
-            self.move_list = ["front kick","forward gab","upper cut"]           
+        if self.character_class == Occupation.WARRIOR:
+            self.move_list = [
+                Move_Types.SLASH,
+                Move_Types.STAB,
+                Move_Types.PUNCH
+                ]
+        if self.character_class == Occupation.MARTIAL_ARTIST:
+            self.move_list = [
+                Move_Types.FRONT_KICK,
+                Move_Types.FORWARD_GAB,
+                Move_Types.UPPER_CUT
+                ]           
 
         def load_move(move:str):
             #grabs a specifcially names move based on "move", then adds to dictionary and gives a object as value from the add_moves function.
@@ -346,7 +359,16 @@ class BaseHumanoidEntity:
         #for m in self.move_list:
         #    print(f" - {m}")
         attack_type = input("Which attack move will you use?")
-        attack = self.move_dict[attack_type].action(parent=self)
+        #dictionary keys makes a list then index that list with text input
+        for k,v in self.move_dict:
+
+
+            #this ling errors
+            if k.value == attack_type:
+                print(k.value)
+                attack = v.action(parent=self)
+                break
+        #attack = self.move_dict[attack_type].action(parent=self)
         return (attack,attack_type)
 
 
@@ -519,7 +541,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
                         while not valid_input:
                             print("enter the attack you would like to do (e.g:front kick):")
                             for n, move in enumerate(attacker.move_list):
-                                print(f"({n}) - {move}")
+                                print(f"({n}) - {move.value}")
                             try:
                                 base_attack,attack_type = attacker.choose_attack()
                             except:
@@ -561,7 +583,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
                             if target.armor != None:
                                 print(f"armor absorbs {target.armor.damage_absorption}")
                             print("fitness absorption is "+ str(target.defualt_defence))
-                            print(f"attacker does {actual_damage} actual damage after")
+                            print(f"attacker does {actual_damage} actual damage after damage")
                             print(f"target is at {target.health}HP")
 
                             #test the movement with front kick input  
@@ -596,7 +618,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
                         while not valid_input:
                             print("enter the attack you would like to do (e.g:front kick):")
                             for n, move in enumerate(attacker.move_list):
-                                print(f"({n}) - {move}")
+                                print(f"({n}) - {move.value}")
                             try:
                                 base_attack,attack_type = attacker.choose_attack()
                             except:
