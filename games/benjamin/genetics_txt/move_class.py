@@ -74,7 +74,7 @@ class move_class():
             self.weapon = None
 
         if move_type == "karate side kick":
-            self.muscle_group = "legs"
+            self.muscle_group = "lower_body"
             self.level_multiplier = 0.2
             #the base damage used for the move
             self.move_root = 1
