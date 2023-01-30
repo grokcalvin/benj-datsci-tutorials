@@ -49,6 +49,56 @@ class move_class():
             self.move_root = 0.7
             self.weapon = None
 
+
+
+        if move_type == "karate front kick":
+            #legs and core
+            self.muscle_group = "lower_body"
+            self.level_multiplier = 0.3
+            #the base damage used for the move
+            self.move_root = 1
+            self.weapon = None
+
+        if move_type == "karate gab":
+            self.muscle_group = "arms_and_chest"
+            self.level_multiplier = 0.2
+            #the base damage used for the move
+            self.move_root = 0.7
+            self.weapon = None
+
+        if move_type == "karate upper cut":
+            self.muscle_group = "arms_and_chest"
+            self.level_multiplier = 0.2
+            #the base damage used for the move
+            self.move_root = 1
+            self.weapon = None
+
+        if move_type == "karate side kick":
+            self.muscle_group = "legs"
+            self.level_multiplier = 0.2
+            #the base damage used for the move
+            self.move_root = 1
+            self.weapon = None
+
+        if move_type == "karate flying side kick":
+            self.muscle_group = "lower_body"
+            self.level_multiplier = 0.35
+            #the base damage used for the move
+            self.move_root = 1
+            self.weapon = None
+
+        if move_type == "karate power punch":
+            self.muscle_group = "arms_and_chest_and_core"
+            self.level_multiplier = 0.3
+            #the base damage used for the move
+            self.move_root = 1
+            self.weapon = None
+
+        #Sameri
+        #karate
+        #ty quand0
+        #
+
     def check_for_level_up(self,parent):
         while self.xp >= self.next_level_xp:
             self.level += 1

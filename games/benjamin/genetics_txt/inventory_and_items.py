@@ -218,9 +218,10 @@ class Inventory:
                     i.add_quantity(item.quantity)
                     break
         else:
-            item.inventory_parent = self
-            item.entity_parent = self.parent
-            self.items.append(item)
+            if item != None:
+                self.items.append(item)
+            else:
+                pass
 
 #if equipment == object del just like, all entities
 
