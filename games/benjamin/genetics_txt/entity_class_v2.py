@@ -467,8 +467,13 @@ class party():
         self.entities = entities
 
 
-def player_died(target,all_entities,party):
+def player_died(target,all_entities,party,loot_pool):
     if target.health <= 0:
+
+        loot_pool.add_items(target.Inventory)
+        loot_pool.add(target.weapon)
+        loot_pool.add(target.armor)
+        #if the player has nothing in there inventory it will error
 
         party.entities = [p for p in party.entities if p != target]
 
@@ -478,7 +483,7 @@ def player_died(target,all_entities,party):
 
     return all_entities,party
 
-def battle(all_entities,party_1,party_2):
+def battle(all_entities,party_1,party_2,loot_pool):
     #defined party and all entities list happens before this
 
     #parties are defines in the parent function
@@ -567,7 +572,7 @@ def battle(all_entities,party_1,party_2):
                     #target.health = target.health - i.Random_Attack_Damage()
                     if target.health <= 0:
                         print(f"{target.race}:{target.name} {target.last_name} has died.")
-                        all_entities,party_2 = player_died(target,all_entities,party_2)
+                        all_entities,party_2 = player_died(target,all_entities,party_2,loot_pool)
                 else:
                     #if attacker is_player
                     if attacker.is_player:
@@ -641,13 +646,14 @@ def battle(all_entities,party_1,party_2):
                 print('\n')
                 if target.health <= 0:
                     print(f"{target.race}:{target.name} {target.last_name} has died.")
-                    all_entities,party_1 = player_died(target,all_entities,party_1)
+                    all_entities,party_1 = player_died(target,all_entities,party_1,loot_pool)
             if len(party_1.entities) == 0:
                 print("Party 2 has Wins")
                 return "Party 2 wins"
             elif len(party_2.entities) == 0:
                 print("Party 1 has Wins")
                 return "Party 1 wins"
+            loot_pool.print_inventory()
         print("-------")
         #for en in all_entities:
         #    en.round_pass()
@@ -666,6 +672,9 @@ def battle(all_entities,party_1,party_2):
 #random.random > (.95)**dexterity dodge
 
 def random_battle_goblin(party_1):
+
+    loot_pool = Inventory()
+
     #sets goblin to a party and in all_entities list
 
     #this is a problem, everytime I rerun the function the same dead entity is used.
@@ -674,7 +683,7 @@ def random_battle_goblin(party_1):
     print(f"you are fighting 2 goblins!\n(1)- {entity_one.race}:{entity_one.name} {entity_one.last_name}\n(2)- {entity_two.race}:{entity_two.name} {entity_two.last_name}")
     party_2 = party(entities=[entity_one,entity_two])
     all_entities = party_1.entities + party_2.entities
-    winner = battle(all_entities,party_1,party_2)
+    winner = battle(all_entities,party_1,party_2,loot_pool)
     if winner == "Party 1 wins":
         return "continue"
     elif winner == "Party 2 wins":
