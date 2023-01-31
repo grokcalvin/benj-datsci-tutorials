@@ -413,6 +413,19 @@ class BaseHumanoidEntity:
 
         print(f"level - {self.level}")
 
+    def round_over(self):
+        try:
+            for E_I in self.effects:
+                if E_I.is_recurring:
+                    E_I.recurring()
+                E_I.round_duration -= 1
+                if E_I.round_duration <= 0:
+                    E_I.remove()
+        except Exception as exc:
+            #does this work?
+            print(exc)
+
+
 def summon_human(Level,is_player=False):
     entity = BaseHumanoidEntity(is_player=is_player,
                                 race= "Human",
@@ -664,7 +677,6 @@ def battle(all_entities,party_1,party_2,loot_pool):
                             #test the movement with front kick input  
                             #later use the type of attack in the attack prints
     #problem that when a character dies they still get one more attack becuase they finish the loop.
-
                 print('\n')
                 if target.health <= 0:
                     print(f"{target.race}:{target.name} {target.last_name} has died.")
@@ -677,6 +689,10 @@ def battle(all_entities,party_1,party_2,loot_pool):
                 return "Party 1 wins"
             loot_pool.print_inventory()
         print("-------")
+        
+        #this code will cycle though active effects on all entities and test if the duration is up, and remove one duration from it.
+        for entity in all_entities:
+            entity.round_over()
         #for en in all_entities:
         #    en.round_pass()
 

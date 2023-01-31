@@ -81,8 +81,8 @@ class Consumable:
 #on round durration <= 0 activate remove
 #the use function is ran externally when you use the item
 
-class effect():
-    def __init__(self,parent_entity,name,is_recurring=False,round_duration=1,health_increase=None,strength=None,constitution=None,dexterity=None,wisdom=None,intelligents=None,charsima=None,size_increase=None):
+class effect_item():
+    def __init__(self,parent_entity,name,is_recurring=False,round_duration=1,health_increase:int=None,strength:int=None,constitution:int=None,dexterity:int=None,wisdom:int=None,intelligents:int=None,charsima:int=None,size_increase=None):
         self.parent = parent_entity
         self.round_durarion = round_duration
         self.name = name
@@ -138,6 +138,23 @@ class effect():
             self.parent.health += self.health_increase
             if self.parent.health >= self.parent.max_health:
                 self.parent.health = self.parent.max_health
+
+#for E_I in effects 
+    #if recuring function recuring
+    #if rounds == 0
+        #remove
+
+#on use of item
+    #add to effects
+    #remove one from inventory
+
+#every round
+    #during battle
+    #function round_over
+        #iterate through all entities
+            #iterate through all effects per entity
+                #subtract from round duration
+                #test is recurring if so then effect
 
 
         if self.strength != None:
