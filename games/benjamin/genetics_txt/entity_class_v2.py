@@ -148,7 +148,7 @@ class BaseHumanoidEntity:
         self.intelligents :int = intelligents
         self.charsima :int = charisma
 
-        self.max_health = (((self.leg_length**2+self.arm_length**2+self.torso_height**2)/3)*self.size**2)*(70+(10*self.constitution))//0.001/1000
+        self.max_health = round((((self.leg_length**2+self.arm_length**2+self.torso_height**2)/3)*self.size**2)*(10*self.constitution),0)
         self.health = self.max_health
 
 
@@ -437,13 +437,13 @@ def summon_human(Level,is_player=False):
                                 level = Level,
                                 level_up_points = Level - 1,
 
-                                strength = 2,
-                                constitution = 2,
-                                dexterity = 2,
+                                strength = 10,
+                                constitution = 10,
+                                dexterity = 10,
 
-                                wisdom = 2,
-                                intelligents = 2,
-                                charisma =2
+                                wisdom = 10,
+                                intelligents = 10,
+                                charisma =10
                                 )
     entity.Auto_Add_Level_Up_Points()
     return entity
@@ -459,13 +459,13 @@ def summon_goblin(Level,is_player=False):
                                 level = Level,
                                 level_up_points = Level - 1,
 
-                                strength = 4,
-                                constitution = 2,
-                                dexterity = 4,
+                                strength = 15,
+                                constitution = 10,
+                                dexterity = 12,
 
-                                wisdom = 1,
-                                intelligents = 2,
-                                charisma =2
+                                wisdom = 6,
+                                intelligents = 8,
+                                charisma =8
                                 )
     entity.Auto_Add_Level_Up_Points()
     return entity
@@ -481,14 +481,14 @@ def summon_elf(Level,is_player=False):
                                 level = Level,
                                 level_up_points = Level - 1,
 
-                                strength = 2,
-                                constitution = 2,
-                                dexterity = 3,
+                                strength = 12,
+                                constitution = 10,
+                                dexterity = 13,
 
-                                wisdom = 2,
-                                intelligents = 3,
-                                charisma =1
-                                )
+                                wisdom = 12,
+                                intelligents = 12,
+                                charisma =8
+                               )
     entity.Auto_Add_Level_Up_Points()
     return entity
 
@@ -572,7 +572,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
                     dodge = target.Dexterity_Check(attacker_dexterity=attacker.dexterity)
                     attack_role = d(20)
 
-                    print(f"{attacker.race}:{attacker.name} {attacker.last_name} 10 +{attacker.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
+                    print(f"{attacker.race}:{attacker.name} {attacker.last_name} {attacker.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
 
                     if dodge and attack_role != 20:
                         print(f"{target.race}:{target.name} {target.last_name} dodged attack from {attacker.race}:{attacker.name} {attacker.last_name}")
@@ -590,7 +590,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
                             print(f"target is at {target.health}HP")
                         elif attack_role > 1 and attack_role < 20:
 
-                            attack = (base_attack*(10+attacker.strength)+(base_attack*attack_role/2))
+                            attack = (base_attack*(attacker.strength)+(base_attack*attack_role/2))
                             actual_damage = target.take_attack(attack)
                             print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacker.race}:{attacker.name} {attacker.last_name} for {attack} before defence")
                             if target.armor != None:
@@ -648,7 +648,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
                     dodge = target.Dexterity_Check(attacker_dexterity=attacker.dexterity)
                     attack_role = d(20)
 
-                    print(f"{attacker.race}:{attacker.name} {attacker.last_name} 10 +{attacker.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
+                    print(f"{attacker.race}:{attacker.name} {attacker.last_name} {attacker.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
 
                     if dodge and attack_role != 20:
                         print(f"{target.race}:{target.name} {target.last_name} dodged attack from {attacker.race}:{attacker.name} {attacker.last_name}")
@@ -666,7 +666,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
                             print(f"target is at {target.health}HP")
                         elif attack_role > 1 and attack_role < 20:
 
-                            attack = (base_attack*(10+attacker.strength)+(base_attack*attack_role/2))
+                            attack = (base_attack*(attacker.strength)+(base_attack*attack_role/2))
                             actual_damage = target.take_attack(attack)
                             print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacker.race}:{attacker.name} {attacker.last_name} for {attack} before defence")
                             if target.armor != None:
@@ -689,7 +689,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
                 return "Party 1 wins"
             loot_pool.print_inventory()
         print("-------")
-        
+
         #this code will cycle though active effects on all entities and test if the duration is up, and remove one duration from it.
         for entity in all_entities:
             entity.round_over()
