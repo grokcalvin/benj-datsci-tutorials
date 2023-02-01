@@ -189,7 +189,7 @@ class move_class():
         parent.xp += 10
         parent.check_for_level_up()
 
-        return ((Damage_Factor/1000)//0.1/10)
+        return round((Damage_Factor/1000),1)
 
             #dont foregt xp give functions to moves and muscles      
 

@@ -204,7 +204,6 @@ class BaseHumanoidEntity:
                 Move_Types.UPPER_CUT
                 ]           
 
-        def load_move(move:str):
             #grabs a specifcially names move based on "move", then adds to dictionary and gives a object as value from the add_moves function.
             #body usage types
             #function that uses the info of the object to filter through which body type to use
@@ -214,14 +213,13 @@ class BaseHumanoidEntity:
             #average attack is 10, average aborbsion is size**2
 
             #object will have xp and level attributes
-            return move_class(move_type=move)
 
         self.move_dict = {}
 
         #use list comprhension to only display  the moves you can do filtering throught each move based on the weapon equiped
 
         for move in self.move_list:
-            self.move_dict[move] = load_move(move=move)
+            self.move_dict[move] = move_class(move_type=move)
             print(self.move_dict)
 
 
@@ -360,16 +358,15 @@ class BaseHumanoidEntity:
         #    print(f" - {m}")
         attack_type = input("Which attack move will you use?")
         #dictionary keys makes a list then index that list with text input
-        for k,v in self.move_dict:
+        for k,v in self.move_dict.items():
 
 
             #this ling errors
             if k.value == attack_type:
                 print(k.value)
                 attack = v.action(parent=self)
-                break
+                return (attack,attack_type)
         #attack = self.move_dict[attack_type].action(parent=self)
-        return (attack,attack_type)
 
 
         #pass in the target and attacker dexterity values
