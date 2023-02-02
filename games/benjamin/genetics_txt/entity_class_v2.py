@@ -158,6 +158,10 @@ class BaseHumanoidEntity:
         self.core_muscle_group = random.randint(1,2000)
         self.leg_muscle_group = random.randint(1,2000)
 
+        #effects list
+
+        self.effects = []
+
         #print(f"chest muscle group {self.chest_muscle_group}")
         #print(f"arm muscle group {self.arm_muscle_group}")
         #print(f"core muscle group {self.core_muscle_group}")
@@ -228,7 +232,6 @@ class BaseHumanoidEntity:
         if not self.is_player:
             print(f"{self.race} {self.level} weapon {self.weapon.name}")
             print(f"{self.race} {self.level} armor {self.armor.name}")
-
 
     def get_loot(self):
         if not self.is_player:
@@ -347,6 +350,7 @@ class BaseHumanoidEntity:
         #also have if role 20, dodges dont work.
         attack_type = self.move_list[random.randrange(0,(len(self.move_list)))]
         attack = self.move_dict[attack_type].action(parent=self)
+        attack_type = attack_type.value
         return (attack,attack_type)
 
 #does having a main class for everything make more sense compared to functions because of all the inputs you need to change in the function.
@@ -499,12 +503,14 @@ class party():
         self.entities = entities
 
 
-def player_died(target,all_entities,party,loot_pool):
+def entity_died(target,all_entities,party,loot_pool):
     if target.health <= 0:
 
         loot_pool.add_items(target.Inventory)
-        loot_pool.add(target.weapon)
-        loot_pool.add(target.armor)
+        #loot_pool.add(target.weapon)
+        #loot_pool.add(target.armor)
+        print("------- loot pool inventory ------")
+        loot_pool.print_inventory()
         #if the player has nothing in there inventory it will error
 
         party.entities = [p for p in party.entities if p != target]
@@ -554,10 +560,9 @@ def battle(all_entities,party_1,party_2,loot_pool):
                                 print(f"({n}) - {move.value}")
                             try:
                                 base_attack,attack_type = attacker.choose_attack()
+                                valid_input = True
                             except:
                                 print("\ninvalid input, try again")
-                            else:
-                                valid_input = True
                     else:
                         base_attack,attack_type = attacker.random_attack()
 
@@ -604,7 +609,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
                     #target.health = target.health - i.Random_Attack_Damage()
                     if target.health <= 0:
                         print(f"{target.race}:{target.name} {target.last_name} has died.")
-                        all_entities,party_2 = player_died(target,all_entities,party_2,loot_pool)
+                        all_entities,party_2 = entity_died(target,all_entities,party_2,loot_pool)
                 else:
                     #if attacker is_player
                     if attacker.is_player:
@@ -631,10 +636,9 @@ def battle(all_entities,party_1,party_2,loot_pool):
                                 print(f"({n}) - {move.value}")
                             try:
                                 base_attack,attack_type = attacker.choose_attack()
+                                valid_input = True
                             except:
                                 print("\ninvalid input, try again\n")
-                            else:
-                                valid_input = True
                     else:
                         base_attack,attack_type = attacker.random_attack()
 
@@ -677,14 +681,15 @@ def battle(all_entities,party_1,party_2,loot_pool):
                 print('\n')
                 if target.health <= 0:
                     print(f"{target.race}:{target.name} {target.last_name} has died.")
-                    all_entities,party_1 = player_died(target,all_entities,party_1,loot_pool)
+                    all_entities,party_1 = entity_died(target,all_entities,party_1,loot_pool)
+                    print("party")
             if len(party_1.entities) == 0:
                 print("Party 2 has Wins")
+                loot_pool.print_inventory()
                 return "Party 2 wins"
             elif len(party_2.entities) == 0:
                 print("Party 1 has Wins")
                 return "Party 1 wins"
-            loot_pool.print_inventory()
         print("-------")
 
         #this code will cycle though active effects on all entities and test if the duration is up, and remove one duration from it.
