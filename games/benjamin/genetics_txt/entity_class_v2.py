@@ -374,7 +374,7 @@ class BaseHumanoidEntity:
 
 
         #pass in the target and attacker dexterity values
-    def Dexterity_Check(self,attacker_dexterity):
+    def dexterity_check(self,attacker_dexterity):
         #attacker.random_attack role, this gets rid of the need for a incoming attack variable
         #but will need a is player arguement for if the player wants to do a specific attack
         if (0.10)*(self.dexterity-attacker_dexterity) < random.random():
@@ -525,9 +525,126 @@ def entity_died_1(target,party,loot_pool):
         #if the player has nothing in there inventory it will error
 
         party.entities = [p for p in party.entities if p != target]
-    #you will need to add a system to add the died players armor and weapon to there inventory
 
-    return party
+def battlev0_1(party_1,party_2,loot_pool):
+    def party_attack_party(attacking_party,targeted_party,loot_pool):
+        for attacking_enitity in attacking_party.entities:
+            #this checks if the entity is dead so it doesnt attack after death if the entity isnt out of the list.
+            if attacking_enitity.health > 0:
+                time.sleep(3)
+                
+
+            #this block lets the current player in the party select which entity from the opposite party to attack.
+                if attacking_enitity.is_player:
+                    valid_input = False
+                    while valid_input == False:
+                        print(f"\nYour targets are:")
+                        for n,i in enumerate(targeted_party.entities):
+                            time.sleep(1)
+                            print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
+                        try:
+                            target_index = int(input("enter the number of the target you want to attack:"))
+                            target = targeted_party.entities[target_index]
+                        except:
+                            print("invalid input, try again.")
+                        else:
+                            valid_input = True
+                        print("\n")
+
+            #this selects and random target from the opposite party. This is used for none player enitiies
+                else:
+                    target = targeted_party.entities[random.randrange(len(targeted_party.entities))]
+
+
+            #this block gets the base attack and attack type based on which move the player selects
+                if attacking_enitity.is_player:
+                    valid_input = False
+                    while not valid_input:
+                        print("enter the attack you would like to do (e.g:front kick):")
+                        for n, move in enumerate(attacking_enitity.move_list):
+                            print(f"({n}) - {move.value}")
+                        try:
+                            print("\n")
+                            base_attack,attack_type = attacking_enitity.choose_attack()
+                            valid_input = True
+                        except:
+                            print("\ninvalid input, try again")
+
+            #this selects a random attack for the selected entity if they are not a player.
+                else:
+                    base_attack,attack_type = attacking_enitity.random_attack()
+
+            #this next block performs the attack on the targeted entity
+                print(f"{attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} tries {attack_type}")
+
+                dodge = target.dexterity_check(attacker_dexterity=attacking_enitity.dexterity)
+                attack_role = d(20)
+
+                print(f"{attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} {attacking_enitity.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
+                
+                if dodge and attack_role != 20:
+                    print(f"{target.race}:{target.name} {target.last_name} dodged attack from {attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name}")
+                else:
+                    if attack_role == 1:
+                        print(f"Critical Failure! {attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} missed!")
+                    elif attack_role == 20:
+                        attack = base_attack*(30+attacking_enitity.strength)
+                        actual_damage = target.take_attack(attack)
+                        print(f"Critcal Attack {attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack} before defence")
+                        if target.armor != None:
+                            print(f"armor absorbs {target.armor.damage_absorption}")
+                        print("fitness absorption is "+ str(target.defualt_defence))
+                        print(f"attacking_enitity does {actual_damage} actual damage")
+                        print(f"target is at {target.health}HP")
+                    elif attack_role > 1 and attack_role < 20:
+
+                        attack = (base_attack*(attacking_enitity.strength)+(base_attack*attack_role/2))
+                        actual_damage = target.take_attack(attack)
+                        print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} for {attack} before defence")
+                        if target.armor != None:
+                            print(f"armor absorbs {target.armor.damage_absorption}")
+                        print("fitness absorption is "+ str(target.defualt_defence))
+                        print(f"attacking_enitity does {actual_damage} actual damage after damage")
+                        print(f"target is at {target.health}HP")
+                print("\n")
+                if target.health <= 0:
+                    print(f"{target.race}:{target.name} {target.last_name} has died.")
+                    targeted_party = entity_died_1(target,targeted_party,loot_pool)
+
+                #this line might add targeted party to attacking party
+                all_entities = []
+                if attacking_party != None:
+                    all_entities.extend(attacking_party.entities)
+                if targeted_party != None:
+                    all_entities.extend(targeted_party.entities)
+                for entity in all_entities:
+                    entity.round_over()
+
+                if len(targeted_party.entities) == 0:
+                    loot_pool.print_inventory()
+                    return True
+
+    #defined party and all entities list happens before this
+
+    #parties are defines in the parent function
+
+    #for e in all_entities:
+    #    if e in party_2.entities:
+    #        e.health = 1
+    parties = [party_1,party_2]
+    while party_1.entities != None and party_2.entities != None:
+        for selected_party in parties:
+            if parties.index(selected_party) == 0:
+                Victory = party_attack_party(parties[0],parties[1],loot_pool)
+                if Victory:
+                    print("party 1 wins!")
+            if parties.index(selected_party) == 1:
+                Victory = party_attack_party(parties[1],parties[0],loot_pool)
+                if Victory:
+                    print("party 2 wins!")
+
+                #if return battle_over print Party_ wins!
+    #make separate function
 
 def battle(all_entities,party_1,party_2,loot_pool):
     #defined party and all entities list happens before this
@@ -585,7 +702,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
 
                     print(f"{attacker.race}:{attacker.name} {attacker.last_name} tries {attack_type}")
 
-                    dodge = target.Dexterity_Check(attacker_dexterity=attacker.dexterity)
+                    dodge = target.dexterity_check(attacker_dexterity=attacker.dexterity)
                     attack_role = d(20)
 
                     print(f"{attacker.race}:{attacker.name} {attacker.last_name} {attacker.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
@@ -660,7 +777,7 @@ def battle(all_entities,party_1,party_2,loot_pool):
 
                     print(f"{attacker.race}:{attacker.name} {attacker.last_name} tries {attack_type}")
 
-                    dodge = target.Dexterity_Check(attacker_dexterity=attacker.dexterity)
+                    dodge = target.dexterity_check(attacker_dexterity=attacker.dexterity)
                     attack_role = d(20)
 
                     print(f"{attacker.race}:{attacker.name} {attacker.last_name} {attacker.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
@@ -736,12 +853,7 @@ def random_battle_goblin(party_1):
     entity_two = summon_goblin(Level=random.randint(5,10))
     print(f"you are fighting 2 goblins!\n(1)- {entity_one.race}:{entity_one.name} {entity_one.last_name}\n(2)- {entity_two.race}:{entity_two.name} {entity_two.last_name}")
     party_2 = party(entities=[entity_one,entity_two])
-    all_entities = party_1.entities + party_2.entities
-    winner = battle(all_entities,party_1,party_2,loot_pool)
-    if winner == "Party 1 wins":
-        return "continue"
-    elif winner == "Party 2 wins":
-        return "GAME OVER"
+    battlev0_1(party_1,party_2,loot_pool)
     #sets off combat until one party is empty
 
         #when entity dies it gains tag "is alive = False"
@@ -772,279 +884,3 @@ if __name__ == "__main__":
 
 #skill class, that gives moves and XP
 #loot tables
-
-def battle(all_entities,party_1,party_2,loot_pool):
-    #defined party and all entities list happens before this
-
-    #parties are defines in the parent function
-
-    #for e in all_entities:
-    #    if e in party_2.entities:
-    #        e.health = 1
-    while len(party_1.entities) > 0 and len(party_2.entities) > 0:
-        for selected_party in [party_1,party_2]:
-            for attacker in selected_party.entities:
-                pass
-    def party_attack_party(attacking_party,targeted_party,loot_pool):
-        for attacking_enitity in attacking_party.entity:
-            #this checks if the entity is dead so it doesnt attack after death if the entity isnt out of the list.
-            if attacking_enitity.health > 0:
-                time.sleep(5)
-                
-
-            #this block lets the current player in the party select which entity from the opposite party to attack.
-                if attacking_enitity.is_player:
-                    valid_input = False
-                    while valid_input == False:
-                        print(f"\nYour targets are:")
-                        for n,i in enumerate(targeted_party.entities):
-                            time.sleep(1)
-                            print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
-                            try:
-                                target_index = int(input("enter the number of the target you want to attack:"))
-                                target = targeted_party.entities[target_index]
-                            except:
-                                print("invalid input, try again.")
-                            else:
-                                valid_input = True
-                            print("\n")
-
-            #this selects and random target from the opposite party. This is used for none player enitiies
-                else:
-                    target = targeted_party.entities[random.randrange(len(targeted_party.entities))]
-
-
-            #this block gets the base attack and attack type based on which move the player selects
-                if attacking_enitity.is_player:
-                    valid_input = False
-                    while not valid_input:
-                        print("enter the attack you would like to do (e.g:front kick):")
-                        for n, move in enumerate(attacking_enitity.move_list):
-                            print(f"({n}) - {move.value}")
-                        try:
-                            base_attack,attack_type = attacking_enitity.choose_attack()
-                            valid_input = True
-                        except:
-                            print("\ninvalid input, try again")
-
-            #this selects a random attack for the selected entity if they are not a player.
-                else:
-                    base_attack,attack_type = attacking_enitity.random_attack()
-
-            #this next block performs the attack on the targeted entity
-                print(f"{attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} tries {attack_type}")
-
-                dodge = target.Dexterity_Check(attacking_enitity_dexterity=attacking_enitity.dexterity)
-                attack_role = d(20)
-
-                print(f"{attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} {attacking_enitity.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
-                
-                if dodge and attack_role != 20:
-                    print(f"{target.race}:{target.name} {target.last_name} dodged attack from {attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name}")
-                else:
-                    if attack_role == 1:
-                        print(f"Critical Failure! {attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} missed!")
-                    elif attack_role == 20:
-                        attack = base_attack*(30+attacking_enitity.strength)
-                        actual_damage = target.take_attack(attack)
-                        print(f"Critcal Attack {attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack} before defence")
-                        if target.armor != None:
-                            print(f"armor absorbs {target.armor.damage_absorption}")
-                        print("fitness absorption is "+ str(target.defualt_defence))
-                        print(f"attacking_enitity does {actual_damage} actual damage")
-                        print(f"target is at {target.health}HP")
-                    elif attack_role > 1 and attack_role < 20:
-
-                        attack = (base_attack*(attacking_enitity.strength)+(base_attack*attack_role/2))
-                        actual_damage = target.take_attack(attack)
-                        print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} for {attack} before defence")
-                        if target.armor != None:
-                            print(f"armor absorbs {target.armor.damage_absorption}")
-                        print("fitness absorption is "+ str(target.defualt_defence))
-                        print(f"attacking_enitity does {actual_damage} actual damage after damage")
-                        print(f"target is at {target.health}HP")
-
-                if target.health <= 0:
-                    print(f"{target.race}:{target.name} {target.last_name} has died.")
-                    targeted_party = entity_died_1(target,targeted_party,loot_pool)
-
-                if len(targeted_party.entities) == 0:
-                    loot_pool.print_inventory()
-                    return None
-
-
-
-
-
-
-
-    while len(party_1.entities) > 0 and len(party_2.entities) > 0:
-        #does this update mid iteration>
-        #when a level up happens if strength stat in increased it ups all muscle groups by 250
-        for attacker in all_entities:
-            party_1_attacking = attacker in party_1.entities
-            if attacker.health > 0:
-                time.sleep(5)
-                if party_1_attacking:
-                    #if attacker is_player
-                    #if is player, see the opposite party and type which one to attacks
-                    if attacker.is_player:
-                        valid_input = False
-                        while valid_input == False:
-                            print(f"\nYour targets are:")
-                            for n,i in enumerate(party_2.entities):
-                                time.sleep(1)
-                                print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
-                            try:
-                                target_index = int(input("enter the number of the target you want to attack:"))
-                                target = party_2.entities[target_index]
-                            except:
-                                print("invalid input, try again.")
-                            else:
-                                valid_input = True
-                            print("\n")
-                    else:
-                        target = party_2.entities[random.randrange(len(party_2.entities))]
-                    if attacker.is_player:
-                        valid_input = False
-                        while not valid_input:
-                            print("enter the attack you would like to do (e.g:front kick):")
-                            for n, move in enumerate(attacker.move_list):
-                                print(f"({n}) - {move.value}")
-                            try:
-                                base_attack,attack_type = attacker.choose_attack()
-                                valid_input = True
-                            except:
-                                print("\ninvalid input, try again")
-                    else:
-                        base_attack,attack_type = attacker.random_attack()
-
-                    #attacker tries ____(front kick) on target
-                    #gives a dead tag if Hp is greater than 0
-
-                    print(f"{attacker.race}:{attacker.name} {attacker.last_name} tries {attack_type}")
-
-                    dodge = target.Dexterity_Check(attacker_dexterity=attacker.dexterity)
-                    attack_role = d(20)
-
-                    print(f"{attacker.race}:{attacker.name} {attacker.last_name} {attacker.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
-
-                    if dodge and attack_role != 20:
-                        print(f"{target.race}:{target.name} {target.last_name} dodged attack from {attacker.race}:{attacker.name} {attacker.last_name}")
-                    else:
-                        if attack_role == 1:
-                            print(f"Critical Failure! {attacker.race}:{attacker.name} {attacker.last_name} missed!")
-                        elif attack_role == 20:
-                            attack = base_attack*(30+attacker.strength)
-                            actual_damage = target.take_attack(attack)
-                            print(f"Critcal Attack {attacker.race}:{attacker.name} {attacker.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack} before defence")
-                            if target.armor != None:
-                                print(f"armor absorbs {target.armor.damage_absorption}")
-                            print("fitness absorption is "+ str(target.defualt_defence))
-                            print(f"attacker does {actual_damage} actual damage")
-                            print(f"target is at {target.health}HP")
-                        elif attack_role > 1 and attack_role < 20:
-
-                            attack = (base_attack*(attacker.strength)+(base_attack*attack_role/2))
-                            actual_damage = target.take_attack(attack)
-                            print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacker.race}:{attacker.name} {attacker.last_name} for {attack} before defence")
-                            if target.armor != None:
-                                print(f"armor absorbs {target.armor.damage_absorption}")
-                            print("fitness absorption is "+ str(target.defualt_defence))
-                            print(f"attacker does {actual_damage} actual damage after damage")
-                            print(f"target is at {target.health}HP")
-
-                            #test the movement with front kick input  
-                            #later use the type of attack in the attack prints
-                    #pass in i.dexterity
-                    #dodge = True/False
-                    print('\n')
-                    #target.health = target.health - i.Random_Attack_Damage()
-                    if target.health <= 0:
-                        print(f"{target.race}:{target.name} {target.last_name} has died.")
-                        all_entities,party_2 = entity_died(target,all_entities,party_2,loot_pool)
-                else:
-                    #if attacker is_player
-                    if attacker.is_player:
-                        valid_input = False
-                        while not valid_input:
-                            print(f"\nYour targets are:")
-                            for n,i in enumerate(party_1.entities):
-                                print(f"({n}) - {i.race}:{i.name} {i.last_name} HP:{i.health}")
-                            target_index = int(input("enter the number of the target you want to attack:"))
-                            try:
-                                target = party_1.entities[target_index]
-                            except:
-                                print("invalid number, try again:")
-                            else:
-                                valid_input = True
-                            print("\n")
-                    else:
-                        target = party_1.entities[random.randrange(len(party_1.entities))]
-                    if attacker.is_player:
-                        valid_input = False
-                        while not valid_input:
-                            print("enter the attack you would like to do (e.g:front kick):")
-                            for n, move in enumerate(attacker.move_list):
-                                print(f"({n}) - {move.value}")
-                            try:
-                                base_attack,attack_type = attacker.choose_attack()
-                                valid_input = True
-                            except:
-                                print("\ninvalid input, try again\n")
-                    else:
-                        base_attack,attack_type = attacker.random_attack()
-
-                    #attacker tries ____(front kick) on target
-
-                    print(f"{attacker.race}:{attacker.name} {attacker.last_name} tries {attack_type}")
-
-                    dodge = target.Dexterity_Check(attacker_dexterity=attacker.dexterity)
-                    attack_role = d(20)
-
-                    print(f"{attacker.race}:{attacker.name} {attacker.last_name} {attacker.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
-
-                    if dodge and attack_role != 20:
-                        print(f"{target.race}:{target.name} {target.last_name} dodged attack from {attacker.race}:{attacker.name} {attacker.last_name}")
-                    else:
-                        if attack_role == 1:
-                            print(f"Critical Failure! {attacker.race}:{attacker.name} {attacker.last_name} missed!")
-                        elif attack_role == 20:
-                            attack = base_attack*(30+attacker.strength)
-                            actual_damage = target.take_attack(attack)
-                            print(f"Critcal Attack {attacker.race}:{attacker.name} {attacker.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack} before defence")
-                            if target.armor != None:
-                                print(f"armor absorbs {target.armor.damage_absorption}")
-                            print("fitness absorption is "+ str(target.defualt_defence))
-                            print(f"attacker does {actual_damage} actual damage")
-                            print(f"target is at {target.health}HP")
-                        elif attack_role > 1 and attack_role < 20:
-
-                            attack = (base_attack*(attacker.strength)+(base_attack*attack_role/2))
-                            actual_damage = target.take_attack(attack)
-                            print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacker.race}:{attacker.name} {attacker.last_name} for {attack} before defence")
-                            if target.armor != None:
-                                print(f"armor absorbs {target.armor.damage_absorption}")
-                            print("fitness absorption is "+ str(target.defualt_defence))
-                            print(f"attacker does {actual_damage} actual damage after")
-                            print(f"target is at {target.health}HP")
-                            #test the movement with front kick input  
-                            #later use the type of attack in the attack prints
-    #problem that when a character dies they still get one more attack becuase they finish the loop.
-                print('\n')
-                if target.health <= 0:
-                    print(f"{target.race}:{target.name} {target.last_name} has died.")
-                    all_entities,party_1 = entity_died(target,all_entities,party_1,loot_pool)
-            if len(party_1.entities) == 0:
-                print("Party 2 has Wins")
-                loot_pool.print_inventory()
-                return "Party 2 wins"
-            elif len(party_2.entities) == 0:
-                print("Party 1 has Wins")
-                loot_pool.print_inventory()
-                return "Party 1 wins"
-        print("-------")
-
-        #this code will cycle though active effects on all entities and test if the duration is up, and remove one duration from it.
-        for entity in all_entities:
-            entity.round_over()
