@@ -553,7 +553,11 @@ def battlev0_1(party_1,party_2,loot_pool):
 
             #this selects and random target from the opposite party. This is used for none player enitiies
                 else:
-                    target = targeted_party.entities[random.randrange(len(targeted_party.entities))]
+                    if len(targeted_party.entities) != 0:
+                        target = targeted_party.entities[random.randrange(len(targeted_party.entities))]
+                    else:
+                        print("Party has lost")
+                        return True
 
 
             #this block gets the base attack and attack type based on which move the player selects
@@ -613,16 +617,10 @@ def battlev0_1(party_1,party_2,loot_pool):
 
                 #this line might add targeted party to attacking party
                 all_entities = []
-                if attacking_party != None:
-                    all_entities.extend(attacking_party.entities)
-                if targeted_party != None:
-                    all_entities.extend(targeted_party.entities)
-                for entity in all_entities:
-                    entity.round_over()
-
-                if len(targeted_party.entities) == 0:
-                    loot_pool.print_inventory()
-                    return True
+        
+        if targeted_party == None:
+            loot_pool.print_inventory()
+            return True
 
     #defined party and all entities list happens before this
 
@@ -632,17 +630,30 @@ def battlev0_1(party_1,party_2,loot_pool):
     #    if e in party_2.entities:
     #        e.health = 1
     parties = [party_1,party_2]
-    while party_1.entities != None and party_2.entities != None:
+    Victory = False
+    while party_1 != None and party_2 != None and not Victory:
         for selected_party in parties:
             if parties.index(selected_party) == 0:
                 Victory = party_attack_party(parties[0],parties[1],loot_pool)
                 if Victory:
                     print("party 1 wins!")
-            if parties.index(selected_party) == 1:
+                    break
+            elif parties.index(selected_party) == 1:
                 Victory = party_attack_party(parties[1],parties[0],loot_pool)
                 if Victory:
                     print("party 2 wins!")
-
+                    break
+            #round end effects.
+        try:
+            for entity in party_1.entities:
+                entity.round_over()
+        except:
+            pass
+        try:
+            for entity in party_2.entities:
+                entity.round_over()
+        except:
+            pass
                 #if return battle_over print Party_ wins!
     #make separate function
 
