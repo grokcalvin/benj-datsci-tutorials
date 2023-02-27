@@ -1,5 +1,5 @@
 import random
-from inventory_and_items import Inventory, Consumable, Armor, silk_robe, rusty_short_sword
+from inventory_and_items import Inventory, rusty_short_sword
 from move_class import move_class, Move_Types
 from pathlib import Path
 import pools
@@ -128,11 +128,14 @@ class BaseHumanoidEntity:
         self.health = self.max_health
 
 
+        #lead to some errrors, call a function and wrap it
+        def set_muscle_group_rand(max_int):
+            return random.randint(1,max_int*1000)/1000
 
-        self.chest_muscle_group = random.randint(1,2000)
-        self.arm_muscle_group = random.randint(1,2000)
-        self.core_muscle_group = random.randint(1,2000)
-        self.leg_muscle_group = random.randint(1,2000)
+        self.chest_muscle_group = set_muscle_group_rand(2)
+        self.arm_muscle_group = set_muscle_group_rand(2)
+        self.core_muscle_group = set_muscle_group_rand(2)
+        self.leg_muscle_group = set_muscle_group_rand(2)
 
         #effects list
 
@@ -244,7 +247,7 @@ class BaseHumanoidEntity:
 
         #later have a loot table that has chances for swords and armor then select the best one.
     def Set_Health(self):
-        self.max_health = (((self.leg_length**2+self.arm_length**2+self.torso_height**2)/3)*self.size**2)*(70+(10*self.constitution))//0.001/1000
+        self.max_health = round((((self.leg_length**2+self.arm_length**2+self.torso_height**2)/3)*self.size**2)*(70+(10*self.constitution)),3)
         self.health = self.max_health        
 
     def Auto_Add_Level_Up_Points(self):
@@ -267,10 +270,11 @@ class BaseHumanoidEntity:
 
             #tied to level up points not level
             if not self.is_player:
-                self.arm_muscle_group += round(250/((self.arm_muscle_group/1000)**2),0)
-                self.chest_muscle_group += round(250/((self.chest_muscle_group/1000)**2),0)
-                self.core_muscle_group += round(250/((self.core_muscle_group/1000)**2),0)
-                self.leg_muscle_group += round(250/((self.leg_muscle_group/1000)**2),0)
+                # TODO: make less muscle added the higher the level
+                self.arm_muscle_group += round(((self.arm_muscle_group)**2),0)
+                self.chest_muscle_group += round(((self.chest_muscle_group)**2),0)
+                self.core_muscle_group += round(((self.core_muscle_group)**2),0)
+                self.leg_muscle_group += round(((self.leg_muscle_group)**2),0)
 
 #a mvoe class like warrior that desides how you xp is spent on moves
 
@@ -366,9 +370,9 @@ class BaseHumanoidEntity:
         if not self.armor is None:
             attack -= self.armor.damage_absorption
 
-        self.defualt_defence = round(((((self.arm_muscle_group+self.chest_muscle_group+self.core_muscle_group+self.leg_muscle_group)/4)/1000)**2),2)
+        self.default_defence = round(((((self.arm_muscle_group+self.chest_muscle_group+self.core_muscle_group+self.leg_muscle_group)/4))**2),2)
 
-        attack = attack - self.defualt_defence
+        attack = attack - self.default_defence
         if attack <= 0:
             attack = 0.01
 

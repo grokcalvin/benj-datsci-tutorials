@@ -1,12 +1,15 @@
 import time
 import random
-from party_class import party
+
+class Party():
+    def __init__(self,entities:list):
+        self.entities = entities
 
 
-def d(number):
-    return random.randint(1,number)
+def dice_roll(sides):
+    return random.randint(1,sides)
 
-def entity_died_1(target,party,loot_pool):
+def entity_died(target,party,loot_pool):
     if target.health <= 0:
 
         loot_pool.add_items(target.Inventory)
@@ -18,7 +21,7 @@ def entity_died_1(target,party,loot_pool):
     
     return party
 
-def battlev0_1(party_1,party_2,loot_pool):
+def battlev0_1(party_1:Party,party_2:Party,loot_pool):
     def party_attack_party(attacking_party,targeted_party,loot_pool):
         for attacking_enitity in attacking_party.entities:
             #this checks if the entity is dead so it doesnt attack after death if the entity isnt out of the list.
@@ -74,7 +77,7 @@ def battlev0_1(party_1,party_2,loot_pool):
                 print(f"{attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} tries {attack_type}")
 
                 dodge = target.dexterity_check(attacker_dexterity=attacking_enitity.dexterity)
-                attack_role = d(20)
+                attack_role = dice_roll(20)
 
                 print(f"{attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} {attacking_enitity.strength} strength + roles ({attack_role})/2   base damage {base_attack }")
                 
@@ -89,7 +92,7 @@ def battlev0_1(party_1,party_2,loot_pool):
                         print(f"Critcal Attack {attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} does X3 damage to {target.race}:{target.name} {target.last_name} for a total of {attack} before defence")
                         if target.armor is not None:
                             print(f"armor absorbs {target.armor.damage_absorption}")
-                        print("fitness absorption is "+ str(target.defualt_defence))
+                        print("fitness absorption is "+ str(target.default_defence))
                         print(f"attacking_enitity does {actual_damage} actual damage")
                         print(f"target is at {target.health}HP")
                     elif attack_role > 1 and attack_role < 20:
@@ -99,13 +102,13 @@ def battlev0_1(party_1,party_2,loot_pool):
                         print(f"{target.race}:{target.name} {target.last_name} gets hit with {attack_type} by {attacking_enitity.race}:{attacking_enitity.name} {attacking_enitity.last_name} for {attack} before defence")
                         if target.armor is not None:
                             print(f"armor absorbs {target.armor.damage_absorption}")
-                        print("fitness absorption is "+ str(target.defualt_defence))
+                        print("fitness absorption is "+ str(target.default_defence))
                         print(f"attacking_enitity does {actual_damage} actual damage after damage")
                         print(f"target is at {target.health}HP")
                 print("\n")
                 if target.health <= 0:
                     print(f"{target.race}:{target.name} {target.last_name} has died.")
-                    targeted_party = entity_died_1(target,targeted_party,loot_pool)
+                    targeted_party = entity_died(target,targeted_party,loot_pool)
 
                 #this line might add targeted party to attacking party
                 all_entities = []

@@ -1,14 +1,10 @@
 import random
-from move_class import move_class, Move_Types
 from inventory_and_items import Inventory, Consumable, Armor, silk_robe, rusty_short_sword
-from pathlib import Path
-import time
-import pools
 from dataclasses import dataclass
 from enum import Enum
 from base_entity import BaseHumanoidEntity
 from race_functions import spawn_human, spawn_goblin, spawn_elf
-from party_attack_party import battlev0_1,d,party
+from party import battlev0_1,Party
 
 valid_input = False
 while valid_input == False:
@@ -76,7 +72,7 @@ def random_battle_goblin(party_1):
     entity_one = spawn_goblin(Level=random.randint(5,10))
     entity_two = spawn_goblin(Level=random.randint(5,10))
     print(f"you are fighting 2 goblins!\n(1)- {entity_one.race}:{entity_one.name} {entity_one.last_name}\n(2)- {entity_two.race}:{entity_two.name} {entity_two.last_name}")
-    party_2 = party(entities=[entity_one,entity_two])
+    party_2 = Party(entities=[entity_one,entity_two])
     battlev0_1(party_1,party_2,loot_pool)
     #sets off combat until one party is empty
 
@@ -89,7 +85,7 @@ def main():
     armor_1.damage_absorption = 1
     armor_1.entity_parent = player_1
     armor_1.equip()
-    party_1 = party(entities=[player_1])
+    party_1 = Party(entities=[player_1])
     print(party_1.entities)
 
 
