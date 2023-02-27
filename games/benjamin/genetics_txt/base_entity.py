@@ -8,6 +8,19 @@ from enum import Enum
 
 PARENT_DIR = Path(__file__).parent
 
+def increase_muscle_group(
+        muscle_group: float,
+        level: int
+):
+    baseline = 0.25
+    assert muscle_group >= 1
+    assert muscle_group <= 2
+    assert level > 0
+    for _ in range(level-1):
+        muscle_group += baseline / (muscle_group**2)
+    
+    return muscle_group
+
 
 def random_scale(base=1):
     types_of_scale = [
