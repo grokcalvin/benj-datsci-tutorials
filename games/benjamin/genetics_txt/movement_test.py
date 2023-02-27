@@ -1,7 +1,7 @@
 import move_class
-import entity_class_v2
+import games.benjamin.genetics_txt.app as app
 
-human_1 = entity_class_v2.summon_human(Level=10)
+human_1 = app.summon_human(Level=10)
 
 movement_object = move_class.move_class(move_type="forward gab")
 print(movement_object.muscle_group)
