@@ -86,7 +86,6 @@ def main():
     armor_1.entity_parent = player_1
     armor_1.equip()
     party_1 = Party(entities=[player_1])
-    print(party_1.entities)
 
 
     battle_output = random_battle_goblin(party_1)

@@ -145,7 +145,7 @@ class move_class():
         #on kill of enememy give the killing blow move a percentage of the killed target player the xp if the killing blow move
 
         weapon_bonus = 1
-        if self.weapon != None and parent.weapon != None:
+        if self.weapon is not None and parent.weapon is not None:
             weapon_bonus = parent.weapon.base_damage
 
 
@@ -182,7 +182,7 @@ class move_class():
 
         self.xp += 10
         if parent.is_player:
-            print(f"{self.move} {self.xp}xp/{self.next_level_xp}xp")
+            print(f"{self.move.value} {self.xp}xp/{self.next_level_xp}xp")
         #game setting, show xp gain for all entities
         self.check_for_level_up(parent)
 

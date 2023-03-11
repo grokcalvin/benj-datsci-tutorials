@@ -184,7 +184,7 @@ class BaseHumanoidEntity:
                     print("invalid input try again!\n")
                 else:
                     valid_input = True
-                    print(f"you are now a {self.character_class}\n")
+                    print(f"you are now a {self.character_class.value}\n")
 
         #moves
         if self.character_class == Occupation.WARRIOR:
@@ -216,14 +216,14 @@ class BaseHumanoidEntity:
 
         for move in self.move_list:
             self.move_dict[move] = move_class(move_type=move)
-            print(self.move_dict)
 
 
 
         self.get_loot()
-        if not self.is_player:
-            print(f"{self.race} {self.level} weapon {self.weapon.name}")
-            print(f"{self.race} {self.level} armor {self.armor.name}")
+
+    def print_gear(self):
+        print(f"{self.race} {self.level} weapon {self.weapon.name}")
+        print(f"{self.race} {self.level} armor {self.armor.name}")
 
     def get_loot(self):
         if not self.is_player:
@@ -282,12 +282,13 @@ class BaseHumanoidEntity:
             self.level_up_points -= 1
 
             #tied to level up points not level
-            if not self.is_player:
+
+            #if not self.is_player:
                 # TODO: make less muscle added the higher the level
-                self.arm_muscle_group += round(((self.arm_muscle_group)**2),0)
-                self.chest_muscle_group += round(((self.chest_muscle_group)**2),0)
-                self.core_muscle_group += round(((self.core_muscle_group)**2),0)
-                self.leg_muscle_group += round(((self.leg_muscle_group)**2),0)
+                #self.arm_muscle_group += round(((self.arm_muscle_group)**2),0)
+                #self.chest_muscle_group += round(((self.chest_muscle_group)**2),0)
+                #self.core_muscle_group += round(((self.core_muscle_group)**2),0)
+                #self.leg_muscle_group += round(((self.leg_muscle_group)**2),0)
 
 #a mvoe class like warrior that desides how you xp is spent on moves
 
@@ -360,7 +361,6 @@ class BaseHumanoidEntity:
 
             #this ling errors
             if k.value == attack_type:
-                print(k.value)
                 attack = v.action(parent=self)
                 return (attack,attack_type)
         #attack = self.move_dict[attack_type].action(parent=self)
