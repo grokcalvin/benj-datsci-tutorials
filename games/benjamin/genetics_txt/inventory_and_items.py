@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import List
 import copy
+import random
 
 class Armor:
     def __init__(self,name,damage_absorption,value=0,inventory_parent=None,entity_parent=None,lore=None,quantity=1) -> None:
@@ -51,9 +52,9 @@ class Weapon:
         self.entity_parent = parent
 
 class Consumable:
-    def __init__(self,name,damage_absorption,quantity,inventory_parent=None,entity_parent=None,lore=None) -> None:
+    def __init__(self,name,health_increase,quantity,inventory_parent=None,entity_parent=None,lore=None) -> None:
         self.name = name
-        self.health_increase = damage_absorption
+        self.health_increase = health_increase
         self.quantity = quantity
         self.entity_parent = entity_parent
         self.inventory_parent = inventory_parent
@@ -279,6 +280,57 @@ class Inventory:
         for i in self.items:
             print(f" - {i.name} x{i.quantity}")
 
+    def open(self,parent=None):
+        page_length = 20
+        pages = (len(self.items)//page_length)+1
+        last_page_number_of_items = len(self.items) % page_length
+        open = True
+        current_page = 1
+        while open == True:
+            index = (current_page-1)*page_length
+            if current_page == pages:
+                print_x_items = last_page_number_of_items
+            else:
+                print_x_items = page_length
+
+
+            for i in range(print_x_items):
+                index += 1
+                print(f"{index} {self.items[index-1].name} x{self.items[index-1].quantity}")
+            print(f"page {current_page}/{pages}\ntype p then the page number you want get to. example:p2")
+            print("to select a item enter its number. or type \"close\" to exit inventory.")
+            valid_input = False
+            while valid_input == False:
+                try:
+                    input1 = input()
+                    if input1 == "close":
+                        open = False
+                        break
+                    elif input1[0] == "p":
+                        print(input1[1:])
+                        if int(input1[1:]) <= pages and int(input1[1:]) > 0:
+                            current_page = int(input1[1:])
+                            valid_input = True
+                        else:
+                            print("number out of range, try again.")
+                    elif int(input1) > 0 and int(input1) <= len(self.items):
+                        print(f"interact with {self.items[int(input1)-1].name}")
+                        self.items[int(input1)-1].interact
+                        #or have a interact with inventory with an input of item?
+                    elif int(input1) <= 0 or int(input1) > len(self.items):
+                        print("invalid index try again.")
+                    else:
+                        print("invalid input")
+
+                        #a tag that inventory has and is set to when/before inventoryis being used.
+                            #if tag = in battle inventory then on item use close inventory and change battle object.turn_state = over.
+                except:
+                    pass
+                else:
+                    pass
+
+
+
 #weapon definitions
 def rusty_short_sword():
     rusty_short_sword = Weapon(name="rusty_short_sword",damage=5)
@@ -419,7 +471,15 @@ def main():
     Inventory_1.add_items(Inventory_2)
     print("------------")
     Inventory_1.print_inventory()
-
+    for item in range(151):
+        random_num = random.randint(1,3)
+        if random_num == 1:
+            Inventory_1.add(rusty_short_sword())
+        if random_num == 2:
+            Inventory_1.add(short_sword())
+        if random_num == 3:
+            Inventory_1.add(silk_robe())
+    Inventory_1.open()
 
 
 
