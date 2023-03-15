@@ -76,13 +76,12 @@ class Consumable:
     def add_parent_entity(self,parent):
         self.inventory_parent = parent.Inventory
         self.entity_parent = parent
-
 #effects are placed in an entities effect list and every round in a battle it is subtracted 
 #reorruring and one and done when cycling through the effects in the effects list, if an effect has Is_recurring it runs the reorrering method
 #on round durration <= 0 activate remove
 #the use function is ran externally when you use the item
 
-class effect_item():
+class Effect_Item():
     def __init__(self,parent_entity,name,is_recurring=False,round_duration=1,health_increase:int=None,strength:int=None,constitution:int=None,dexterity:int=None,wisdom:int=None,intelligents:int=None,charsima:int=None,size_increase=None):
         self.parent = parent_entity
         self.round_durarion = round_duration
@@ -139,7 +138,8 @@ class effect_item():
             self.parent.health += self.health_increase
             if self.parent.health >= self.parent.max_health:
                 self.parent.health = self.parent.max_health
-
+    def interact(self):
+        pass
 #for E_I in effects 
     #if recuring function recuring
     #if rounds == 0
@@ -224,6 +224,7 @@ class Inventory:
     def __init__(self,parent=None) -> None:
         self.items = []
         self.parent = parent
+        self.STATE = "Normal"
         #you are passing the parent to the innit not creating it
     #certain items have info to access and thats how they have there effect, e.g. Armor
     #when scaping Armor you can keep one of its components
@@ -280,8 +281,7 @@ class Inventory:
         for i in self.items:
             print(f" - {i.name} x{i.quantity}")
 
-    def open(self,parent=None):
-        page_length = 20
+    def open(self,parent=None,page_length=20):
         pages = (len(self.items)//page_length)+1
         last_page_number_of_items = len(self.items) % page_length
         open = True
@@ -295,8 +295,8 @@ class Inventory:
 
 
             for i in range(print_x_items):
+                print(f"{index+1} {self.items[index].name} x{self.items[index].quantity}")
                 index += 1
-                print(f"{index} {self.items[index-1].name} x{self.items[index-1].quantity}")
             print(f"page {current_page}/{pages}\ntype p then the page number you want get to. example:p2")
             print("to select a item enter its number. or type \"close\" to exit inventory.")
             valid_input = False
@@ -325,8 +325,6 @@ class Inventory:
                         #a tag that inventory has and is set to when/before inventoryis being used.
                             #if tag = in battle inventory then on item use close inventory and change battle object.turn_state = over.
                 except:
-                    pass
-                else:
                     pass
 
 
