@@ -220,6 +220,31 @@ class Effect_Item():
 
 #add effects variable in entity class
 
+def interact(item,Inventory_Type="free roaming"):
+    valid_input = False
+    while valid_input == False:
+        print("you have selected {item.name}.\ndrop\ninspect")
+        if type(item) == Consumable or type(item) == Effect_Item:
+            print("use")
+        if type(item) == Armor or type(item) == Weapon:
+            print("equip")
+        print("back")
+        interaction_type = input(":")
+
+
+
+        if interaction_type == "drop":
+            pass
+        if interaction_type == "inspect":
+            pass
+        if interaction_type == "use" and (type(item) == Consumable or type(item) == Effect_Item):
+            pass
+        if interaction_type == "equip" and (type(item == Weapon or type(item) == Armor)):
+            pass
+        else:
+            print("invalid input")
+    pass
+
 class Inventory:
     def __init__(self,parent=None) -> None:
         self.items = []
@@ -281,7 +306,7 @@ class Inventory:
         for i in self.items:
             print(f" - {i.name} x{i.quantity}")
 
-    def open(self,parent=None,page_length=20):
+    def open(self,parent=None,page_length=20,Inventory_Type="Free Roam"):
         pages = (len(self.items)//page_length)+1
         last_page_number_of_items = len(self.items) % page_length
         open = True
@@ -315,7 +340,7 @@ class Inventory:
                             print("number out of range, try again.")
                     elif int(input1) > 0 and int(input1) <= len(self.items):
                         print(f"interact with {self.items[int(input1)-1].name}")
-                        self.items[int(input1)-1].interact
+                        self.items[int(input1)-1].interact(Inventory_Type=Inventory_Type)
                         #or have a interact with inventory with an input of item?
                     elif int(input1) <= 0 or int(input1) > len(self.items):
                         print("invalid index try again.")
