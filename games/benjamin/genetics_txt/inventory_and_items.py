@@ -68,8 +68,10 @@ class Consumable:
         self.entity_parent.health += self.health_increase
         if self.entity_parent.health > self.entity_parent.max_health:
             self.entity_parent.health = self.entity_parent.max_health
+        print(f"{self.entity_parent.name} {self.entity_parent.last_name} used {self.name} for {self.health_increase}")
+        print(f"total hp is now {self.entity_parent.health}")
         if self.quantity <= 0:
-            self.inventory_parent.remove(self)
+            self.entity_parent.Inventory.remove(self)
     def add_quantity(self,item_quantity):
         self.quantity += item_quantity
 
@@ -82,8 +84,10 @@ class Consumable:
 #the use function is ran externally when you use the item
 
 class Effect_Item():
-    def __init__(self,parent_entity,name,is_recurring=False,round_duration=1,health_increase:int=None,strength:int=None,constitution:int=None,dexterity:int=None,wisdom:int=None,intelligents:int=None,charsima:int=None,size_increase=None):
-        self.parent = parent_entity
+    def __init__(self,quantity=1,lore="__Blank__",entity_parent=None,name="___",is_recurring=False,round_duration=1,health_increase:int=None,strength:int=None,constitution:int=None,dexterity:int=None,wisdom:int=None,intelligents:int=None,charsima:int=None,size_increase=None):
+        self.quantity = quantity
+        self.lore = lore
+        self.entity_parent = entity_parent
         self.round_durarion = round_duration
         self.name = name
         self.is_recurring = is_recurring
@@ -106,40 +110,54 @@ class Effect_Item():
             #print(f"(4)intelligents {self.intelligents}")
             #print(f"(5)charsima {self.charsima}")
     def use(self):
+        #how to test if has recurring method
+        effects_name_list = [ e.name for e in self.entity_parent.effects]
+        if self.name in effects_name_list:
+            index = effects_name_list.index(self.name)
+            effects_name_list.pop(index)
+            self.entity_parent.effects.append(copy.deepcopy(self))
+        else:
+            self.entity_parent.effects.append(copy.deepcopy(self))
+
         if self.health_increase != None:
-            self.parent.health += self.health_increase
-            if self.parent.health >= self.parent.max_health:
-                self.parent.health = self.parent.max_health
+            self.entity_parent.health += self.health_increase
+            if self.entity_parent.health > self.entity_parent.max_health:
+                self.entity_parent.health = self.entity_parent.max_health
 
 
         if self.strength != None:
-            self.parent.strength += self.strength
+            self.entity_parent.strength += self.strength
 
         if self.constitution != None:
-            self.parent.constitution += self.constitution
+            self.entity_parent.constitution += self.constitution
 
         if self.dexterity != None:
-            self.parent.dexterity += self.dexterity
+            self.entity_parent.dexterity += self.dexterity
 
         if self.wisdom != None:
-            self.parent.wisdom += self.wisdom
+            self.entity_parent.wisdom += self.wisdom
 
         if self.intelligents != None:
-            self.parent.intelligents += self.intelligents
+            self.entity_parent.intelligents += self.intelligents
 
         if self.charisma != None:
-             self.parent.charisma += self.charisma     
+             self.entity_parent.charisma += self.charisma     
 
         if self.size_increase != None:
-             self.parent.size =  self.parent.size * self.size_increase       
+             self.entity_parent.size =  self.entity_parent.size * self.size_increase      
+
+        self.quantity -= 1 
+        if self.quantity <= 0:
+            self.entity_parent.Inventory.remove(self)
+
+    def add_quantity(self,item_quantity):
+        self.quantity += item_quantity
 
     def recurring(self):
         if self.health_increase != None:
-            self.parent.health += self.health_increase
-            if self.parent.health >= self.parent.max_health:
-                self.parent.health = self.parent.max_health
-    def interact(self):
-        pass
+            self.entity_parent.health += self.health_increase
+            if self.entity_parent.health >= self.entity_parent.max_health:
+                self.entity_parent.health = self.entity_parent.max_health
 #for E_I in effects 
     #if recuring function recuring
     #if rounds == 0
@@ -159,68 +177,64 @@ class Effect_Item():
 
 
         if self.strength != None:
-            self.parent.strength += self.strength
+            self.entity_parent.strength += self.strength
 
         if self.constitution != None:
-            self.parent.constitution += self.constitution
+            self.entity_parent.constitution += self.constitution
 
         if self.dexterity != None:
-            self.parent.dexterity += self.dexterity
+            self.entity_parent.dexterity += self.dexterity
 
         if self.wisdom != None:
-            self.parent.wisdom += self.wisdom
+            self.entity_parent.wisdom += self.wisdom
 
         if self.intelligents != None:
-            self.parent.intelligents += self.intelligents
+            self.entity_parent.intelligents += self.intelligents
 
         if self.charisma != None:
-             self.parent.charisma += self.charisma     
+             self.entity_parent.charisma += self.charisma     
 
         if self.size_increase != None:
-             self.parent.size =  self.parent.size * self.size_increase
+             self.entity_parent.size =  self.entity_parent.size * self.size_increase
 
     def remove(self):
-        name_list = [e.name for e in self.parent.effects]
+        name_list = [e.name for e in self.entity_parent.effects]
         index = name_list.index(self.name)
-        self.parent.effects.pop(index)
+        self.entity_parent.effects.pop(index)
 
         #add a lore system on items to be viewed on item inspection
 
         if self.is_is_recurring:
             pass
         else:
-            if self.health_increase != None:
-                self.parent.health -= self.health_increase
-                if self.parent.health >= self.parent.max_health:
-                    self.parent.health = self.parent.max_health
 
 
             if self.strength != None:
-                self.parent.strength -= self.strength
+                self.entity_parent.strength -= self.strength
 
             if self.constitution != None:
-                self.parent.constitution -= self.constitution
+                self.entity_parent.constitution -= self.constitution
 
             if self.dexterity != None:
-                self.parent.dexterity -= self.dexterity
+                self.entity_parent.dexterity -= self.dexterity
 
             if self.wisdom != None:
-                self.parent.wisdom -= self.wisdom
+                self.entity_parent.wisdom -= self.wisdom
 
             if self.intelligents != None:
-                self.parent.intelligents -= self.intelligents
+                self.entity_parent.intelligents -= self.intelligents
 
             if self.charisma != None:
-                self.parent.charisma -= self.charisma     
+                self.entity_parent.charisma -= self.charisma     
 
             if self.size_increase != None:
-                self.parent.size =  self.parent.size / self.size_increase
+                self.entity_parent.size =  self.entity_parent.size / self.size_increase
 
 #have a armor effects list or have a effect be linked to armor
 
 #add effects variable in entity class
 
-def interact(item,Inventory_Type="free roaming"):
+def interact(item,Inventory_Type="free roaming",Inventory_Index=0):
     valid_input = False
     while valid_input == False:
         print("you have selected {item.name}.\ndrop\ninspect")
@@ -234,10 +248,11 @@ def interact(item,Inventory_Type="free roaming"):
 
 
         if interaction_type == "drop":
-            pass
+            item.entity_parent.Inventory.items.pop(Inventory_Index)
         if interaction_type == "inspect":
-            pass
+            print(f"{item.name} - {item.lore}")
         if interaction_type == "use" and (type(item) == Consumable or type(item) == Effect_Item):
+            item.use()
             pass
         if interaction_type == "equip" and (type(item == Weapon or type(item) == Armor)):
             pass
@@ -340,7 +355,7 @@ class Inventory:
                             print("number out of range, try again.")
                     elif int(input1) > 0 and int(input1) <= len(self.items):
                         print(f"interact with {self.items[int(input1)-1].name}")
-                        self.items[int(input1)-1].interact(Inventory_Type=Inventory_Type)
+                        interact(item=self.items[int(input1)-1],Inventory_Type=Inventory_Type,Inventory_index=(int(input1)-1))
                         #or have a interact with inventory with an input of item?
                     elif int(input1) <= 0 or int(input1) > len(self.items):
                         print("invalid index try again.")
