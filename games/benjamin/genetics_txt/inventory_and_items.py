@@ -68,7 +68,7 @@ class Consumable:
         self.entity_parent.health += self.health_increase
         if self.entity_parent.health > self.entity_parent.max_health:
             self.entity_parent.health = self.entity_parent.max_health
-        print(f"{self.entity_parent.name} {self.entity_parent.last_name} used {self.name} for {self.health_increase}")
+        print(f"{self.entity_parent.name} {self.entity_parent.last_name} used {self.name} for +{self.health_increase}hp")
         print(f"total hp is now {self.entity_parent.health}")
         if self.quantity <= 0:
             self.entity_parent.Inventory.remove(self)
@@ -112,6 +112,7 @@ class Effect_Item():
     def use(self):
         #how to test if has recurring method
         effects_name_list = [ e.name for e in self.entity_parent.effects]
+        #this scans if you arlready have this effect, and it so it refreshes the duration on it.
         if self.name in effects_name_list:
             index = effects_name_list.index(self.name)
             effects_name_list.pop(index)
@@ -147,6 +148,7 @@ class Effect_Item():
              self.entity_parent.size =  self.entity_parent.size * self.size_increase      
 
         self.quantity -= 1 
+        #this wont work because you will subtract 0 from 0
         if self.quantity <= 0:
             self.entity_parent.Inventory.remove(self)
 
@@ -237,7 +239,7 @@ class Effect_Item():
 def interact(item,Inventory_Type="free roaming",Inventory_Index=0):
     valid_input = False
     while valid_input == False:
-        print("you have selected {item.name}.\ndrop\ninspect")
+        print("you have selected {item.name.\nyou can either:\ndrop\ninspect")
         if type(item) == Consumable or type(item) == Effect_Item:
             print("use")
         if type(item) == Armor or type(item) == Weapon:
@@ -249,14 +251,39 @@ def interact(item,Inventory_Type="free roaming",Inventory_Index=0):
 
         if interaction_type == "drop":
             item.entity_parent.Inventory.items.pop(Inventory_Index)
-        if interaction_type == "inspect":
+            valid_input = True
+        elif interaction_type == "inspect":
             print(f"{item.name} - {item.lore}")
-        if interaction_type == "use" and (type(item) == Consumable or type(item) == Effect_Item):
+            valid_input = True
+        elif interaction_type == "use" and (type(item) == Consumable or type(item) == Effect_Item):
             item.use()
-            pass
-        if interaction_type == "equip" and (type(item == Weapon or type(item) == Armor)):
-            pass
-        else:
+            if type(Inventory_Type) == battle:
+                Inventory_Type.round_over = True
+                return ("close")
+
+
+        elif interaction_type == "equip" and (type(item == Weapon or type(item) == Armor)):
+
+            if type(item) == Weapon:
+                if item.entity_parent.weapon != None:   
+                    item.entity_parent.Inventory.add(item.entity_parent.weapon)
+                    item.equip()
+                else:
+                    item.equip()
+                valid_input = True
+                
+
+            elif type(item) == Armor:
+                if item.entity_parent.armor != None:   
+                    item.entity_parent.Inventory.add(item.entity_parent.armor)
+                    item.equip()
+                else:
+                    item.equip()
+                valid_input = True
+        elif interaction_type == "back":
+            valid_input = True
+            break
+        else: 
             print("invalid input")
     pass
 
@@ -324,9 +351,9 @@ class Inventory:
     def open(self,parent=None,page_length=20,Inventory_Type="Free Roam"):
         pages = (len(self.items)//page_length)+1
         last_page_number_of_items = len(self.items) % page_length
-        open = True
+        is_open = True
         current_page = 1
-        while open == True:
+        while is_open == True:
             index = (current_page-1)*page_length
             if current_page == pages:
                 print_x_items = last_page_number_of_items
@@ -338,13 +365,13 @@ class Inventory:
                 print(f"{index+1} {self.items[index].name} x{self.items[index].quantity}")
                 index += 1
             print(f"page {current_page}/{pages}\ntype p then the page number you want get to. example:p2")
-            print("to select a item enter its number. or type \"close\" to exit inventory.")
+            print("to select a item enter its number. or type \"close\" to close inventory.")
             valid_input = False
             while valid_input == False:
                 try:
                     input1 = input()
                     if input1 == "close":
-                        open = False
+                        is_open = False
                         break
                     elif input1[0] == "p":
                         print(input1[1:])
@@ -355,7 +382,11 @@ class Inventory:
                             print("number out of range, try again.")
                     elif int(input1) > 0 and int(input1) <= len(self.items):
                         print(f"interact with {self.items[int(input1)-1].name}")
-                        interact(item=self.items[int(input1)-1],Inventory_Type=Inventory_Type,Inventory_index=(int(input1)-1))
+                        interact_output = interact(item=self.items[int(input1)-1],Inventory_Type=Inventory_Type,Inventory_index=(int(input1)-1))
+                        valid_input = True
+                        if interact_ouput =="close":
+                            valid_input = True
+                            is_open = False
                         #or have a interact with inventory with an input of item?
                     elif int(input1) <= 0 or int(input1) > len(self.items):
                         print("invalid index try again.")
@@ -368,6 +399,9 @@ class Inventory:
                     pass
 
 
+def golden_apple():
+    effect_item = Effect_Item(health_increase=20,is_recurring=True,quantity=5,round_duration=5,name="golden apple")
+    return effect_item
 
 #weapon definitions
 def rusty_short_sword():

@@ -1,5 +1,5 @@
 import random
-from inventory_and_items import Inventory, Consumable, Armor, silk_robe, rusty_short_sword
+from inventory_and_items import Inventory, Consumable, Armor, silk_robe, rusty_short_sword golden_apple
 from dataclasses import dataclass
 from enum import Enum
 from base_entity import BaseHumanoidEntity
@@ -85,6 +85,10 @@ def main():
     armor_1.damage_absorption = 1
     armor_1.entity_parent = player_1
     armor_1.equip()
+
+    player_1.Inventory.add(golden_apple())
+    player_1.Inventory.print_inventory()
+
     party_1 = Party(entities=[player_1])
 
 

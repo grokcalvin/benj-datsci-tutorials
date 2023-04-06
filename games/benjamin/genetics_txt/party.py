@@ -52,12 +52,36 @@ class battle():
                                             print("found target, turning Turn_Over to True")
                                             self.Turn_Over = True
                                         except:
+
+
+                                            #core gameplay, simple fun = starting with more solid character.
+                                            #chat options and team recruitment or hire system
+                                            #clan making and recruiting chacters
+                                            #crafting
+                                            #quests
+
                                             print("invalid input, try again.")
                                         else:
                                             valid_input = True
                                             print("\n") 
                                 if move_type == "Inventory":
                                     attacking_enitity.Inventory.open(Inventory_Type=self)
+
+                                if move_type == "Observe":
+                                    #make deaprate function
+
+                                    valid_input = False
+                                    while valid_input == False:
+                                        number = 0
+                                        print("your team:")
+                                        for name in [f"{entity.name} {entity.last_name} " for entity in attacking_party]
+                                            print(f"({number}) {name}")
+                                            number += 1
+                                        print("\nenemy team:")
+                                        for number,name in [f"{entity.name} {entity.last_name} " for entity in targeted_party]
+                                            print(f"({number}) {name}")
+                                            number += 1
+
                             except:
                                 print("invalid input try again.")
 
