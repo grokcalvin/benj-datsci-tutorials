@@ -1,12 +1,13 @@
 version: "3"
 
 services:
-  local-dev:
+  jupyter-notebooks:
     build:
       context: .
     ports:
       - "8888:8888"
     image: local-dev
     volumes:
-      - .:/opt/jupyter
+      - ./jupyter/notebooks:/home/jovyan/notebooks
+
     tty: true
