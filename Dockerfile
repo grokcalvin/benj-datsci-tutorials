@@ -1,10 +1,11 @@
-FROM python:3.8
+FROM jupyter/scipy-notebook
 
-WORKDIR /opt/benj
+# WORKDIR /opt/benj
 
-ENV PYTHONPATH "${PYTHONPATH}:/opt/benj"
+# ENV PYTHONPATH "${PYTHONPATH}:/opt/benj"
 
+# # RUN pip install pygame
 
-RUN pip install pygame
+# EXPOSE 8888
 
-COPY . .
+# COPY . .

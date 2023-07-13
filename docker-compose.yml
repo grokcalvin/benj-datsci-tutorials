@@ -4,9 +4,9 @@ services:
   local-dev:
     build:
       context: .
-      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
     image: local-dev
     volumes:
-      - .:/opt/benj
+      - .:/opt/jupyter
     tty: true
-    command: /bin/bash
