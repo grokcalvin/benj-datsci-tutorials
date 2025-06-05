@@ -1,0 +1,17 @@
+">"s mrk the end of information that the game will read so make sure to include it
+
+State_Of_World: It's the zombie apocalypse daya. Most people have moved out of the big cities.>
+
+Name the area you start in example Washington State/Aberdeen/Banjo's House>: Washington State/Aberdeen/Bunker>
+
+To add other places in the world becides where you start, add as many as you want using this format: [place to add the world:place that place is in],[],[]: [Hoquim:Washington State],[Olympia:Washington State]>
+
+To add decriptions to areas write [this is an example discription of an area:area name]: [A state known for its rain fall and ever green trees.:Washington State];[A small poor town with a homeless problem:Aberdeen]>
+
+To add topic that will be logged write [Log Topic,Area To assign the Log Topic]: [The Weather In Washington State known for its rain fall and gloomy weather.:Washington State]># I dont care about the bunker I care about the logs of the people in the bunker that have the in the bunker log.
+
+Fill out this Data for your main character:
+Character's Name:____>
+
+
+Decribe the characters core modivation: ____'s core is one of of confidence and charisma, a man who is the epicenter of every room he enters, a magnet for attention and adoration, with a silver tongue and a quick wit, always pushing the boundaries of what's possible, and what's acceptable, with a grin and a charm that can talk his way out of, and into, just about anything, and a deep-seated need to be the center of attention, and to be loved and admired, above all else. Though he hides it under a vineer of confidence.>

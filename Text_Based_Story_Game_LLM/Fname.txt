@@ -1,0 +1,31 @@
+Prompt: please name a random tree
+
+Response:The Quaking Aspen (Populus tremuloides)
+
+Prompt: please name another type of tree
+
+Response:The Black Acacia (Acacia melanoxylon)
+
+Prompt: please name another tree
+
+Response: The Brazilian Pepper Tree (Schinus terebinthifolius)
+
+Prompt: please name another type of tree
+
+Response: The African Sumac (Rhus lancea)
+
+Prompt: please name another tree
+
+Response: The Tulipwood (Harpephilla odorata)
+
+Prompt: please name a type of rock
+
+Response: Gneiss
+
+Prompt: please name another type of rock
+
+Response: Basalt
+
+Prompt: please name another rock
+
+Response: Granite

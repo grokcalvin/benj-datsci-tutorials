@@ -1,0 +1,12 @@
+#strat
+#most simple easy way to do things, then refine as needed
+
+[ Done ] set var to damage character
+[ Done ] test character death
+[ Done ] make prompt for if item is used
+[ Done ] test if used prompt
+[ Done ] make prompt for if item is consumed one use
+[ Done ] test if item consumed on use
+[ Done ] make prompt for naming the item used
+[ Done ] test prompt for naming
+[  ] take out item from list
