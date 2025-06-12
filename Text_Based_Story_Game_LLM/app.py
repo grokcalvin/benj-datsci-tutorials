@@ -30,7 +30,7 @@ import area
 # make players_current location var [ Done ]
 # get players current location [  ]
 
-class game():
+class Game():
 
     #[ Done ] area imports
     #[ Done ] area decriptions imports
@@ -130,7 +130,7 @@ class game():
 
 
 
-game_test = game(input("Enter file name:"))
+game_test = Game(input("Enter file name:"))
 game_test.log_path()
 
         
