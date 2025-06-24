@@ -17,12 +17,12 @@ import transformers
 import pandas as pd
 import jsonlines
 
-from utilities import *
+#from utilities import *
 from transformers import AutoTokenizer
 from transformers import AutoModelForCausalLM
 from transformers import TrainingArguments
 from transformers import AutoModelForCausalLM
-from llama import BasicModelRunner
+#from llama import BasicModelRunner
 
 
 
@@ -30,10 +30,11 @@ logger = logging.getLogger(__name__)
 global_config = None
 
 #important
-dataset_name = "lamini_docs.jsonl"
-dataset_path = f"/content/{dataset_name}"
+dataset_name = "example_json.jsonl"
+dataset_path = f"finetuning/content/{dataset_name}"
 use_hf = False
-
+with open(dataset_path, "r") as f:
+   print(f.read())
 #
 model_name = "lexi-story-48k"
 
