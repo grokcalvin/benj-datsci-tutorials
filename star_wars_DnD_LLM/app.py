@@ -1,10 +1,11 @@
 from ollama import *
 import index_testing
+import game_logic
+import Action_LM #this might be importing from active environment you set in a totally different none git directory.
 
 #imput story to context
-def get_response():
+def get_response(filename="app",):
     On = True
-    filename = "app.txt"
     redo_prompt = ""
     while On == True:
         with open("star_wars_DnD_LLM/data/"+filename,"r") as f:
@@ -31,7 +32,6 @@ def get_response():
             prompt_list[i] = prompt_list[i].replace("Prompt: ","")
         for i in range(len(response_list)):
             response_list[i] = response_list[i].replace("Response: ","")
-        print(prompt_list)
 
         for I in range(len(prompt_list)):
             try:
@@ -43,7 +43,6 @@ def get_response():
             except:
                 pass
         messages_list.append({"role": "user", "content": f"{Prompt}"})
-        print(messages_list)
 
 
         #system prompt#short reply
@@ -95,6 +94,15 @@ def get_response():
             redo_prompt = Prompt
         elif Keep == "reprompt":
             redo_prompt = ""
+
+
 if __name__ == "__main__":
-    get_response()
-#how to add perences and bits of text to the stack of data.
+    game_logic.Compile_Text()
+    get_response("app")
+    get_response("character_raw_data")
+
+    Text = Action_LM.If_Text(examples_file="character_raw_data",text="please turn the above conversation into one coherent character sheet. filling in what's not there.",SYT_PROMPT="You are helping create a character for a starwars 5e DnD game. You will be given a previous conversation on a user creating a character. A few things you should know. 1 - If there isn't enough information for make a full character, including feats, skills, stats, ect then you may fill them in yourself with what makes the most sense. 2 - Do not reply with a comment, only reply with the full character sheet. Thanks!")
+    print(Text)
+    #specific directions to output a full character sheet.
+# [ Done ]how to add perences and bits of text to the stack of data.
+# create character guide that deletes the process text, warning before to AI saying they are about to make a character make sure to help them until they create every part of it.
