@@ -1,0 +1,37 @@
+import math
+import random
+
+QUALITY_TIERS = [
+    "Awful", "Poor", "Normal", "Good", "Excellent", "Masterwork", "Legendary"
+]
+
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
+
+def bias_shift(skill, midpoint=5, strength=6):
+    if skill <= midpoint:
+        x = (skill - midpoint) / (20 - midpoint)  # range [-1, 1]
+    if skill > midpoint:
+        x = (skill - midpoint) / (20 - midpoint)/3  # range [-1, 1]
+    
+    return x * strength  # higher skill = more right shift (better)
+
+def get_quality(skill_level, curve=2.5, strength=6, power=1.5):
+    skill_level = max(0, min(skill_level, 20))
+    shift = bias_shift(skill_level, midpoint=5, strength=strength)
+
+    # Bias the randomness slightly toward the center
+    r = random.random() ** power
+
+    x = (r - 0.5) * curve + shift
+    s = sigmoid(x)
+
+    # Map to tier
+    thresholds = [0.14, 0.28, 0.5, 0.68, 0.82, 0.94, 1.0]
+    for i, threshold in enumerate(thresholds):
+        if s <= threshold:
+            return QUALITY_TIERS[i]
+    return QUALITY_TIERS[-1]
+
+
+print([get_quality(20) for _ in range(10)])
