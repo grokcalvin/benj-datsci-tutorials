@@ -3,7 +3,7 @@ import math
 import random
 
 # Configurations
-BLACKSMITH_SKILL = 20        # 0–20
+BLACKSMITH_SKILL = 5        # 0–20
 SHOP_SIZE = 10
 WEAPON_SCALE = 0.3
 MATERIAL_SCALE = 0.4
