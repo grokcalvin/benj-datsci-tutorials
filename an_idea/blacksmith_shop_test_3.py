@@ -65,9 +65,10 @@ def generate_blacksmith_inventory(size, skill_level):
 
     return list(inventory)
 
-# Generate and print shop
-shop_items = generate_blacksmith_inventory(SHOP_SIZE, BLACKSMITH_SKILL)
+# Generate and print 
+if __name__ == "__main__":
+    shop_items = generate_blacksmith_inventory(SHOP_SIZE, BLACKSMITH_SKILL)
 
-print(f"🛠️  Blacksmith's Shop (Skill {BLACKSMITH_SKILL})")
-for i, item in enumerate(shop_items, 1):
-    print(f"{i}. {item}")
+    print(f"🛠️  Blacksmith's Shop (Skill {BLACKSMITH_SKILL})")
+    for i, item in enumerate(shop_items, 1):
+        print(f"{i}. {item}")

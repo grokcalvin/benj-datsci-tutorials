@@ -4,6 +4,9 @@ from cave_4 import *
 import os
 from TIle_Object_test_1 import *
 from map_1 import *
+from mining_resources_3 import *
+
+
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -70,17 +73,21 @@ def enter_cave(entry_x, entry_y, SaveFile, chunk_size=31, dexterity=10):
             if get_cave_tile(player_x, player_y, SaveFile=SaveFile) == entrance:
                 print("🪜 You climb the ladder and return to the surface.")
                 in_cave = False
-            
+            # test if in ____ then loop through so you can easily add new ores later.
             elif get_cave_tile(player_x, player_y, SaveFile=SaveFile) == TILE_COAL:
+                perform_mining(SaveFile.player, TILE_COAL.emoji)
                 SaveFile.cave_chunk_memory[(chunk_x, chunk_y)].tile_block[(player_x, player_y)] = TILE_CAVE             
     
             elif get_cave_tile(player_x, player_y, SaveFile=SaveFile) == TILE_IRON:
+                perform_mining(SaveFile.player, TILE_IRON.emoji)
                 SaveFile.cave_chunk_memory[(chunk_x, chunk_y)].tile_block[(player_x, player_y)] = TILE_CAVE             
             
             elif get_cave_tile(player_x, player_y, SaveFile=SaveFile) == TILE_CRYSTAL:
+                perform_mining(SaveFile.player, TILE_CRYSTAL.emoji)
                 SaveFile.cave_chunk_memory[(chunk_x, chunk_y)].tile_block[(player_x, player_y)] = TILE_CAVE             
             
             elif get_cave_tile(player_x, player_y, SaveFile=SaveFile) == TILE_MUSHROOM:
+                perform_mining(SaveFile.player, TILE_MUSHROOM.emoji)
                 SaveFile.cave_chunk_memory[(chunk_x, chunk_y)].tile_block[(player_x, player_y)] = TILE_CAVE             
         elapsed = time.time() - tick_start
         time.sleep(max(0, 1 / 20 - elapsed))

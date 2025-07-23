@@ -4,7 +4,8 @@ import os
 import keyboard
 from enter_cave_1 import *
 from play_within_area_test_1 import *
-
+from character_2 import *
+from effect_and_skill_functions import *
 # --- INSERT YOUR draw_chunk() AND draw_biome_map() FUNCTIONS HERE ---
 
 # Example placeholders (comment out these if using real functions)
@@ -22,25 +23,26 @@ class SaveFile:
         self.cave_chunk_memory = {}
         self.player_state = {
             "x": 0,
-            "y": 0,
-            "dexterity": 100,
+            "y": 0
         }
         self.structures = {}  # e.g., village/shop state
         self.filename = "defualt"
-    def save(self, filename="default"):
-        with open(filename, "wb") as f:
-            pickle.dump(self, f)
+        self.player = Character("Banjo")
+        self.player.dexterity = 100
 
-    @staticmethod
-    def load(filename="default.pkl"):
-        if os.path.exists(filename):
-            with open(filename, "rb") as f:
-                return pickle.load(f)
-        else:
-            print("⚠️ No save file found. Creating a new one.")
-            return SaveFile()
+def save(SaveFile):
+    with open(SaveFile.filename, "wb") as f:
+        pickle.dump(SaveFile, f)
 
-test_save_file = SaveFile()
+def load(filename="default.pkl"):
+    if os.path.exists(filename):
+        with open(filename, "rb") as f:
+            return pickle.load(f)
+    else:
+        print("⚠️ No save file found. Creating a new one.")
+        return SaveFile()
+
+game_save = SaveFile()
 
 world_x = 0
 world_y = 0
@@ -81,7 +83,7 @@ def enter_structure(tile, x, y, SaveFile, chunk_size=31):
         time.sleep(5)
 
 # Game loop
-def game_loop():
+def game_loop(game_save=game_save):
     global world_x, world_y, last_move_time, running
     last_x, last_y = world_x, world_y
 
@@ -89,6 +91,7 @@ def game_loop():
         tick_start = time.time()
 
         if keyboard.is_pressed('esc'):
+            save(game_save)
             running = False
             break
 
@@ -109,7 +112,7 @@ def game_loop():
                 moved = True
 
             if moved:
-                current_tile = get_terrain_tile(world_x, world_y, test_save_file)
+                current_tile = get_terrain_tile(world_x, world_y, game_save)
 
                 # If stepped on invalid terrain, revert to last position
                 if current_tile.emoji in ["💧", "☃️", "🦂"]:  # Add more if needed
@@ -123,12 +126,12 @@ def game_loop():
 
                 #clear_screen()
                 print("🗺️ Biome Overview:")
-                biome_tile_block = get_biome_tiles(chunk_x, chunk_y, test_save_file)
+                biome_tile_block = get_biome_tiles(chunk_x, chunk_y, game_save)
                 biome_tile_block_w_player = tile_block_insert_center_player(tile_block=biome_tile_block)
                 print(draw_tile_block(biome_tile_block_w_player))
 
                 print("\n🌍 Detailed Terrain View:")
-                terrain_tile_block = get_terrain_tile_block(world_x,world_y, test_save_file)
+                terrain_tile_block = get_terrain_tile_block(world_x,world_y, game_save)
                 terrain_tile_block_w_player = tile_block_insert_center_player(tile_block=terrain_tile_block)
                 print(draw_tile_block(terrain_tile_block_w_player))
 
@@ -136,17 +139,17 @@ def game_loop():
 
         # Enter structure if player presses Enter
         if keyboard.is_pressed('enter'):
-            current_tile = get_terrain_tile(world_x, world_y, test_save_file)
+            current_tile = get_terrain_tile(world_x, world_y, game_save)
             if current_tile.emoji in ['🏠', '🪨 ']:  # Add other interactable tiles here
-                enter_structure(current_tile, world_x, world_y, SaveFile=test_save_file)
+                enter_structure(current_tile, world_x, world_y, SaveFile=game_save)
                 #clear_screen()
                 print("🗺️ Biome Overview:")
-                tile_block = get_biome_tiles(chunk_x, chunk_y, test_save_file)
+                tile_block = get_biome_tiles(chunk_x, chunk_y, game_save)
                 tile_block = tile_block_insert_center_player(tile_block=tile_block)
                 print(draw_tile_block(tile_block))
 
                 print("\n🌍 Detailed Terrain View:")
-                tile_block = get_terrain_tile_block(world_x,world_y, test_save_file)
+                tile_block = get_terrain_tile_block(world_x,world_y, game_save)
                 tile_block = tile_block_insert_center_player(tile_block=tile_block)
                 print(draw_tile_block(tile_block))
 
@@ -160,6 +163,15 @@ def game_loop():
 # Run the game
 if __name__ == "__main__":
     clear_screen()
+    filename = input("Enter filename to load (leave blank for 'default'): ").strip()
+    if not filename:
+        filename = "default.pkl"
+    elif not filename.endswith(".pkl"):
+        filename += ".pkl"
+
+    save_file = load(filename)
+    save_file.filename = filename  # Ensure SaveFile object knows its filename
+
     print("🌍 Starting map... Use W/A/S/D to move. ESC to quit.")
     time.sleep(1)
-    game_loop()
+    game_loop(save_file)
